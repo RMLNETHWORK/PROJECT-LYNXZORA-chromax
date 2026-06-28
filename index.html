@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ChromaX is a color converter and harmonizer that allows you to pick colors, convert between formats, and explore color harmonies." />
+  <title>ChromaX - Color Converter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" href="/LynxZora - ChromaX Logo.svg" sizes="1024x1024" type="image/svg+xml">
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#"><span class="logo-dot" id="logoDot"></span>ChromaX</a>
+  <div class="nav-right">
+    <a href="#harmoniesAnchor" class="nav-link">Harmonies</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <div class="toggle-thumb" id="toggleThumb">☀️</div>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <div class="color-stage">
+
+    <!-- Left chips -->
+    <div class="chips left">
+      <div class="chip" onclick="copyChip(this)">
+        <div class="chip-label">HEX</div>
+        <div class="chip-value" id="val-hex">#7C5CFC</div>
+        <span class="chip-copy">copy</span>
+      </div>
+      <div class="chip" onclick="copyChip(this)">
+        <div class="chip-label">RGB</div>
+        <div class="chip-value" id="val-rgb">rgb(124, 92, 252)</div>
+        <span class="chip-copy">copy</span>
+      </div>
+      <div class="chip" onclick="copyChip(this)">
+        <div class="chip-label">HSL</div>
+        <div class="chip-value" id="val-hsl">hsl(258, 96%, 67%)</div>
+        <span class="chip-copy">copy</span>
+      </div>
+      <div class="chip" onclick="copyChip(this)">
+        <div class="chip-label">LAB</div>
+        <div class="chip-value" id="val-lab">lab(45.2 38.4 -67.1)</div>
+        <span class="chip-copy">copy</span>
+      </div>
+    </div>
+
+    <!-- Center picker -->
+    <div class="picker-wrap">
+      <div class="master-label">Master</div>
+      <div class="wheel-bowl">
+        <div class="wheel-container" id="wheelContainer">
+          <canvas id="wheelCanvas" width="240" height="240"></canvas>
+          <canvas id="svCanvas"    width="240" height="240"></canvas>
+          <div class="hue-cursor" id="hueCursor"></div>
+          <div class="sv-cursor"  id="svCursor"></div>
+        </div>
+      </div>
+      <div class="alpha-strip-wrap">
+        <span class="alpha-side-label">A</span>
+        <div class="alpha-track" id="alphaTrack">
+          <div class="alpha-track-gradient" id="alphaGradient"></div>
+          <div class="alpha-thumb" id="alphaThumb"></div>
+        </div>
+        <span class="alpha-value-label" id="alphaLabel">100%</span>
+      </div>
+    </div>
+
+    <!-- Right chips -->
+    <div class="chips right">
+      <div class="chip" onclick="copyChip(this)">
+        <div class="chip-label">HSV</div>
+        <div class="chip-value" id="val-hsv">hsv(258, 63%, 99%)</div>
+        <span class="chip-copy">copy</span>
+      </div>
+      <div class="chip" onclick="copyChip(this)">
+        <div class="chip-label">CMYK</div>
+        <div class="chip-value" id="val-cmyk">cmyk(51%, 63%, 0%, 1%)</div>
+        <span class="chip-copy">copy</span>
+      </div>
+      <div class="chip" onclick="copyChip(this)">
+        <div class="chip-label">CSS VAR</div>
+        <div class="chip-value" id="val-css">--color: #7C5CFC</div>
+        <span class="chip-copy">copy</span>
+      </div>
+      <div class="chip" onclick="copyChip(this)">
+        <div class="chip-label">OKLCH</div>
+        <div class="chip-value" id="val-oklch">oklch(67.0% 0.1934 258.0)</div>
+        <span class="chip-copy">copy</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cvd-stage" aria-label="Color vision deficiency simulations">
+    <div class="color-input-bar" id="colorInputBar">
+      <div class="cib-format-wrap">
+        <select id="formatSelect" class="cib-format-select" aria-label="Input color format">
+          <option value="hex">HEX</option>
+          <option value="rgb">RGB</option>
+          <option value="hsl">HSL</option>
+          <option value="hsv">HSV</option>
+          <option value="cmyk">CMYK</option>
+          <option value="lab">LAB</option>
+          <option value="oklch">OKLCH</option>
+          <option value="css">CSS VAR</option>
+        </select>
+        <span class="cib-format-arrow">&#x25BE;</span>
+      </div>
+      <div class="cib-divider"></div>
+      <label class="cib-pencil" for="colorInput" aria-label="Edit color value">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.5 1.5L11.5 3.5L4.5 10.5L2 11L2.5 8.5L9.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8 3L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </label>
+      <input type="text" id="colorInput" class="cib-input" value="#7C5CFC" spellcheck="false" autocomplete="off" />
+      <div class="cib-swatch" id="cibSwatch"></div>
+      <div class="cib-error" id="cibError" aria-live="polite"></div>
+    </div>
+    <div class="cvd-header">
+      <span class="cvd-title">Vision Simulation</span>
+      <span class="cvd-subtitle">How others see this color</span>
+    </div>
+    <div class="cvd-cards">
+      <div class="cvd-card" data-cvd="deuteranopia">
+        <div class="cvd-swatch-wrap">
+          <div class="cvd-swatch-original" id="cvd-orig-deuteranopia"></div>
+          <div class="cvd-arrow">→</div>
+          <div class="cvd-swatch-sim" id="cvd-sim-deuteranopia"></div>
+        </div>
+        <div class="cvd-card-meta">
+          <div class="cvd-card-name">Deuteranopia</div>
+          <div class="cvd-card-desc">Green-blind · ~1% of males</div>
+          <div class="cvd-card-hex" id="cvd-hex-deuteranopia">#7C5CFC</div>
+        </div>
+      </div>
+      <div class="cvd-card" data-cvd="protanopia">
+        <div class="cvd-swatch-wrap">
+          <div class="cvd-swatch-original" id="cvd-orig-protanopia"></div>
+          <div class="cvd-arrow">→</div>
+          <div class="cvd-swatch-sim" id="cvd-sim-protanopia"></div>
+        </div>
+        <div class="cvd-card-meta">
+          <div class="cvd-card-name">Protanopia</div>
+          <div class="cvd-card-desc">Red-blind · ~1% of males</div>
+          <div class="cvd-card-hex" id="cvd-hex-protanopia">#7C5CFC</div>
+        </div>
+      </div>
+      <div class="cvd-card" data-cvd="tritanopia">
+        <div class="cvd-swatch-wrap">
+          <div class="cvd-swatch-original" id="cvd-orig-tritanopia"></div>
+          <div class="cvd-arrow">→</div>
+          <div class="cvd-swatch-sim" id="cvd-sim-tritanopia"></div>
+        </div>
+        <div class="cvd-card-meta">
+          <div class="cvd-card-name">Tritanopia</div>
+          <div class="cvd-card-desc">Blue-blind · ~0.003% of people</div>
+          <div class="cvd-card-hex" id="cvd-hex-tritanopia">#7C5CFC</div>
+        </div>
+      </div>
+      <div class="cvd-card" data-cvd="achromatopsia">
+        <div class="cvd-swatch-wrap">
+          <div class="cvd-swatch-original" id="cvd-orig-achromatopsia"></div>
+          <div class="cvd-arrow">→</div>
+          <div class="cvd-swatch-sim" id="cvd-sim-achromatopsia"></div>
+        </div>
+        <div class="cvd-card-meta">
+          <div class="cvd-card-name">Achromatopsia</div>
+          <div class="cvd-card-desc">No color vision · ~0.003% of people</div>
+          <div class="cvd-card-hex" id="cvd-hex-achromatopsia">#7C5CFC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="harmoniesAnchor"></div>
+  <div id="harmoniesAnchor2"></div>
+  <div id="harmoniesAnchor3"></div>
+
+  <!-- Harmonies -->
+  <div class="harmony-section" id="harmonies">
+    <h2>Color Harmonies</h2>
+    <div class="harmonies">
+      <div class="harmony-row">
+        <div class="harmony-name">Complementary</div>
+        <div class="harmony-swatches" id="h-complementary"></div>
+      </div>
+      <div class="harmony-row">
+        <div class="harmony-name">Analogous</div>
+        <div class="harmony-swatches" id="h-analogous"></div>
+      </div>
+      <div class="harmony-row">
+        <div class="harmony-name">Triadic</div>
+        <div class="harmony-swatches" id="h-triadic"></div>
+      </div>
+      <div class="harmony-row">
+        <div class="harmony-name">Split-Comp.</div>
+        <div class="harmony-swatches" id="h-split"></div>
+      </div>
+      <div class="harmony-row">
+        <div class="harmony-name">Tetradic</div>
+        <div class="harmony-swatches" id="h-tetradic"></div>
+      </div>
+      <div class="harmony-row tint-row">
+        <div class="harmony-name">Tint Scale</div>
+        <div class="harmony-swatches" id="h-tints"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>chromax.lynxzora.online &nbsp;·&nbsp; pick. convert. copy.</footer>
+<div class="toast" id="toast"></div>
+
+<script src="index.js"></script>
+</body>
+</html>

@@ -1,0 +1,688 @@
+/* ══════════════════════════════════════
+       NEUMORPHIC TOKENS
+       Light: #e0e5ec base, shadows split ±12
+       Dark:  #1e2130 base, shadows split ±8
+    ══════════════════════════════════════ */
+    [data-theme="light"] {
+      --bg:       #e0e5ec;
+      --sh-light: #ffffff;
+      --sh-dark:  #a3b1c6;
+      --text:     #31374a;
+      --muted:    #8896ab;
+      --accent:   #7c5cfc;
+      --accent-sh:#5a3dd4;
+      --nm-out:   6px 6px 14px var(--sh-dark), -6px -6px 14px var(--sh-light);
+      --nm-in:    inset 4px 4px 10px var(--sh-dark), inset -4px -4px 10px var(--sh-light);
+      --nm-sm:    3px 3px 8px var(--sh-dark), -3px -3px 8px var(--sh-light);
+      --nm-lg:    10px 10px 24px var(--sh-dark), -10px -10px 24px var(--sh-light);
+    }
+    [data-theme="dark"] {
+      --bg:       #1e2130;
+      --sh-light: #2c3148;
+      --sh-dark:  #10121e;
+      --text:     #c8d0e7;
+      --muted:    #6b7490;
+      --accent:   #a688fa;
+      --accent-sh:#7c5cfc;
+      --nm-out:   6px 6px 14px var(--sh-dark), -6px -6px 14px var(--sh-light);
+      --nm-in:    inset 4px 4px 10px var(--sh-dark), inset -4px -4px 10px var(--sh-light);
+      --nm-sm:    3px 3px 8px var(--sh-dark), -3px -3px 8px var(--sh-light);
+      --nm-lg:    10px 10px 24px var(--sh-dark), -10px -10px 24px var(--sh-light);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.4s ease, color 0.4s ease;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* ── Navbar ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 66px;
+      background: var(--bg);
+      box-shadow: 0 4px 12px var(--sh-dark), 0 -1px 0 var(--sh-light);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace; font-weight: 500; font-size: 1.2rem;
+      letter-spacing: -0.02em; color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+
+    .logo-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--accent-sh);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 1.2rem; }
+
+    .nav-link {
+      font-size: 0.85rem; color: var(--muted); text-decoration: none;
+      font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 99px;
+      transition: all 0.2s ease;
+      box-shadow: var(--nm-sm);
+    }
+    .nav-link:hover { color: var(--text); }
+    .nav-link:active { box-shadow: var(--nm-in); }
+
+    /* ── Theme Toggle ── */
+    .theme-toggle {
+      width: 56px; height: 28px;
+      background: var(--bg);
+      border-radius: 99px; border: none; cursor: pointer;
+      position: relative;
+      box-shadow: var(--nm-in);
+      transition: box-shadow 0.3s ease, background 0.4s ease;
+    }
+    .toggle-thumb {
+      position: absolute; top: 4px; left: 4px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 2px 2px 5px var(--sh-dark);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; line-height: 1;
+    }
+    [data-theme="light"] .toggle-thumb { transform: translateX(0); }
+    [data-theme="dark"]  .toggle-thumb { transform: translateX(28px); }
+
+    /* ── Main ── */
+    main {
+      min-height: calc(100vh - 66px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 1.5rem 1.5rem 1.5rem;
+    }
+
+    .tagline {
+      font-family: 'DM Mono', monospace; font-size: 0.72rem;
+      color: var(--muted); letter-spacing: 0.16em;
+      text-transform: uppercase; margin-bottom: 3rem; text-align: center;
+    }
+
+    /* ── Color Stage ── */
+    .color-stage {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; gap: 2.5rem;
+      width: 100%; max-width: 1120px;
+    }
+
+    /* ── Chips ── */
+    .chips { display: flex; flex-direction: column; gap: 0.9rem; }
+    .chips.left  { align-items: flex-end; }
+    .chips.right { align-items: flex-start; }
+
+    .chip {
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 0.75rem 1.1rem;
+      cursor: pointer;
+      box-shadow: var(--nm-out);
+      min-width: 240px; max-width: 280px;
+      position: relative; overflow: hidden;
+      transition: box-shadow 0.2s ease, transform 0.15s ease;
+      border: none;
+    }
+    .chip:hover { transform: translateY(-2px); }
+    .chip:active {
+      box-shadow: var(--nm-in);
+      transform: translateY(0);
+    }
+    .chip.copied { box-shadow: var(--nm-in); }
+
+    /* Accent left bar — color tracks the live picked color */
+    .chip::before {
+      content: '';
+      position: absolute; top: 20%; left: 0;
+      width: 3px; height: 60%; border-radius: 0 3px 3px 0;
+      background: var(--chip-accent, var(--accent));
+      opacity: 0; transition: opacity 0.2s, background 0.15s;
+    }
+    .chip:hover::before { opacity: 1; }
+
+    .chip-label {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem;
+      color: var(--muted); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 0.3rem;
+    }
+    .chip-value {
+      font-family: 'DM Mono', monospace; font-size: 0.88rem;
+      font-weight: 500; color: var(--text); word-break: break-all;
+    }
+    .chip-copy {
+      position: absolute; top: 0.6rem; right: 0.8rem;
+      font-size: 0.6rem; color: var(--muted); opacity: 0;
+      transition: opacity 0.15s; font-family: 'DM Mono', monospace;
+    }
+    .chip:hover .chip-copy { opacity: 1; }
+    .chip.copied .chip-copy { opacity: 1; color: #4ade80; }
+
+    /* ── Picker ── */
+    .picker-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.8rem;
+    }
+
+    .master-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1;
+    }
+
+    /* Neumorphic bowl for the wheel */
+    .wheel-bowl {
+      padding: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: var(--nm-lg);
+      transition: box-shadow 0.4s ease, background 0.4s ease;
+    }
+
+    .wheel-container {
+      position: relative; width: 240px; height: 240px;
+      cursor: crosshair; border-radius: 50%;
+      /* inner inset ring */
+      box-shadow: var(--nm-in);
+    }
+    #wheelCanvas { position: absolute; top: 0; left: 0; border-radius: 50%; }
+    #svCanvas    { position: absolute; top: 0; left: 0; }
+
+    .hue-cursor {
+      position: absolute; width: 20px; height: 20px; border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 3px 10px rgba(0,0,0,0.4);
+      pointer-events: none; transform: translate(-50%,-50%); z-index: 10;
+    }
+    .sv-cursor {
+      position: absolute; width: 18px; height: 18px; border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 3px 10px rgba(0,0,0,0.4);
+      pointer-events: none; transform: translate(-50%,-50%); z-index: 10;
+    }
+
+    /* ── Color Input Bar ── */
+    .color-input-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--bg);
+      border-radius: 99px;
+      box-shadow: var(--nm-in);
+      padding: 0.4rem 0.5rem 0.4rem 0.3rem;
+      transition: box-shadow 0.3s ease, background 0.4s ease;
+      min-width: 340px;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    /* Format dropdown wrapper */
+    .cib-format-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .cib-format-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--accent);
+      border: none;
+      border-radius: 99px;
+      color: #fff;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 1.6rem 0.35rem 0.85rem;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 2px 2px 6px var(--sh-dark), -1px -1px 4px var(--sh-light);
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cib-format-select:hover { filter: brightness(1.1); }
+    .cib-format-select option {
+      background: var(--bg);
+      color: var(--text);
+    }
+    .cib-format-arrow {
+      position: absolute;
+      right: 0.55rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.8);
+      font-size: 0.6rem;
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    /* Divider */
+    .cib-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--sh-dark);
+      opacity: 0.4;
+      margin: 0 0.6rem;
+      flex-shrink: 0;
+    }
+
+    /* Pencil icon */
+    .cib-pencil {
+      display: flex;
+      align-items: center;
+      color: var(--accent);
+      opacity: 0.7;
+      cursor: text;
+      flex-shrink: 0;
+      margin-right: 0.35rem;
+      transition: opacity 0.15s, color 0.15s;
+    }
+    .color-input-bar:focus-within .cib-pencil {
+      opacity: 1;
+    }
+
+    /* Text input */
+    .cib-input {
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      flex: 1;
+      min-width: 0;
+      padding: 0.1rem 0;
+    }
+    .cib-input.error { color: #f87171; }
+
+    /* Live color swatch dot — checkerboard shows through on alpha < 1 */
+    .cib-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 2px 2px 5px var(--sh-dark), -1px -1px 3px var(--sh-light);
+      transition: background 0.15s ease;
+      margin-left: 0.4rem;
+      background-image:
+        linear-gradient(45deg, #bbb 25%, transparent 25%),
+        linear-gradient(-45deg, #bbb 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #bbb 75%),
+        linear-gradient(-45deg, transparent 75%, #bbb 75%);
+      background-size: 6px 6px;
+      background-position: 0 0, 0 3px, 3px -3px, -3px 0;
+      position: relative;
+    }
+    .cib-swatch::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    /* Inline error hint */
+    .cib-error {
+      position: absolute;
+      bottom: -1.4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      color: #f87171;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .cib-error.visible { opacity: 1; }
+
+    @media(max-width:480px){
+      .color-input-bar { min-width: unset; }
+    }
+
+    /* ── CVD Vision Simulation ── */
+    .cvd-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.4rem;
+      width: 100%;
+      max-width: 1040px;
+      margin-top: 2rem;
+    }
+
+    .cvd-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      border-left: 1px solid var(--text);
+      border-right: 1px solid var(--text);
+      padding: 0 1.5rem;
+    }
+
+    .cvd-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .cvd-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    .cvd-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .cvd-card {
+      background: var(--bg);
+      border-radius: 20px;
+      padding: 1.1rem 1rem 1rem;
+      box-shadow: var(--nm-out);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.85rem;
+      transition: box-shadow 0.4s ease, background 0.4s ease;
+    }
+
+    .cvd-swatch-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cvd-swatch-original,
+    .cvd-swatch-sim {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.22), -2px -2px 5px rgba(255,255,255,0.1);
+      transition: background 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .cvd-arrow {
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    .cvd-card-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      text-align: center;
+    }
+
+    .cvd-card-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+
+    .cvd-card-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.62rem;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    .cvd-card-hex {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      margin-top: 0.1rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .cvd-card-hex:hover { opacity: 0.7; }
+
+    @media(max-width:760px){
+      .cvd-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media(max-width:420px){
+      .cvd-cards { grid-template-columns: 1fr; }
+    }
+
+    /* ── Harmonies ── */
+    .harmony-section { margin-top: 4rem; width: 100%; max-width: 1120px; }
+
+    .harmony-section h2 {
+      font-family: 'DM Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.5rem; text-align: center;
+    }
+
+    .harmonies { display: flex; flex-direction: column; gap: 1rem; }
+
+    .harmony-row {
+      background: var(--bg);
+      border-radius: 20px;
+      padding: 1rem 1.4rem;
+      display: flex; align-items: center; gap: 1.2rem;
+      box-shadow: var(--nm-out);
+      transition: box-shadow 0.4s ease, background 0.4s ease;
+    }
+
+    .harmony-name {
+      font-family: 'DM Mono', monospace; font-size: 0.65rem;
+      color: var(--muted); letter-spacing: 0.1em;
+      text-transform: uppercase; width: 120px; flex-shrink: 0;
+    }
+
+    .harmony-swatches { display: flex; gap: 0.6rem; flex: 1; flex-wrap: wrap; }
+
+    .swatch {
+      width: 38px; height: 38px; border-radius: 12px; cursor: pointer;
+      flex-shrink: 0; position: relative;
+      /* neumorphic swatch: pressed inset = active */
+      box-shadow: 3px 3px 7px rgba(0,0,0,0.25), -2px -2px 5px rgba(255,255,255,0.12);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      border: none;
+    }
+    .swatch:hover {
+      transform: scale(1.15);
+      box-shadow: 5px 5px 12px rgba(0,0,0,0.3), -3px -3px 8px rgba(255,255,255,0.15);
+    }
+    .swatch.active {
+      box-shadow: inset 3px 3px 7px rgba(0,0,0,0.3), inset -2px -2px 5px rgba(255,255,255,0.15);
+      transform: scale(0.96);
+    }
+    .swatch-hex {
+      display: none; position: absolute; bottom: -22px; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Mono', monospace; font-size: 0.56rem;
+      color: var(--muted); white-space: nowrap;
+    }
+    .swatch:hover .swatch-hex { display: block; }
+    .tint-row .swatch { width: 26px; height: 38px; border-radius: 8px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--bg); border-radius: 99px;
+      padding: 0.55rem 1.4rem;
+      box-shadow: var(--nm-out);
+      font-family: 'DM Mono', monospace; font-size: 0.72rem;
+      color: var(--text); z-index: 999;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+      opacity: 0; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    footer {
+      text-align: center; padding: 2.5rem;
+      font-family: 'DM Mono', monospace; font-size: 0.66rem;
+      color: var(--muted); margin-top: 2rem;
+    }
+
+    @media(max-width:760px){
+      nav { padding: 0 1.2rem; }
+
+      main { padding: 1rem 1rem 4rem; }
+
+      .color-stage {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 1.5rem;
+      }
+
+      /* Stack chips in a 2-column grid on mobile */
+      .chips {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.7rem;
+        width: 100%;
+        max-width: 520px;
+      }
+      .chips.left, .chips.right { align-items: stretch; }
+
+      .chip {
+        min-width: unset;
+        max-width: unset;
+        width: 100%;
+      }
+
+      /* Scale the wheel bowl down on mobile */
+      .wheel-bowl { padding: 12px; }
+
+      /* Alpha strip: fill full width of its container */
+      .alpha-strip-wrap {
+        width: 100%;
+        max-width: 340px;
+      }
+
+      /* Harmony rows: stack name above swatches */
+      .harmony-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.7rem;
+        padding: 0.9rem 1rem;
+      }
+      .harmony-name { width: auto; }
+      .harmony-swatches { flex-wrap: wrap; }
+
+      /* CVD cards: 2 columns */
+      .cvd-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(max-width:480px){
+      /* Wheel: scale down to ~200px on narrow phones */
+      .wheel-container { width: 200px !important; height: 200px !important; }
+      #wheelCanvas, #svCanvas { width: 200px !important; height: 200px !important; }
+      .alpha-strip-wrap { max-width: 224px; }
+
+      /* Single column chips on very narrow screens */
+      .chips { grid-template-columns: 1fr; }
+
+      /* CVD cards: single column */
+      .cvd-cards { grid-template-columns: 1fr; }
+
+      .cvd-swatch-original,
+      .cvd-swatch-sim { width: 36px; height: 36px; }
+    }
+
+    /* ── Alpha Strip ── */
+    .alpha-strip-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 272px; /* matches wheel-bowl total width (240 + 16px padding x2) */
+    }
+
+    .alpha-side-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      flex-shrink: 0;
+      width: 14px;
+      text-align: center;
+    }
+
+    .alpha-value-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--text);
+      flex-shrink: 0;
+      width: 36px;
+      text-align: right;
+      transition: color 0.2s;
+    }
+
+    .alpha-track {
+      flex: 1;
+      height: 18px;
+      border-radius: 99px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: var(--nm-in);
+      /* checkerboard for transparency */
+      background-image:
+        linear-gradient(45deg, #bbb 25%, transparent 25%),
+        linear-gradient(-45deg, #bbb 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #bbb 75%),
+        linear-gradient(-45deg, transparent 75%, #bbb 75%);
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+      overflow: visible;
+    }
+
+    .alpha-track-gradient {
+      position: absolute;
+      inset: 0;
+      border-radius: 99px;
+      pointer-events: none;
+      /* updated via JS */
+      background: linear-gradient(to right, transparent, #7c5cfc);
+    }
+
+    .alpha-thumb {
+      position: absolute;
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.35);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: left 0.05s linear;
+      z-index: 2;
+    }
