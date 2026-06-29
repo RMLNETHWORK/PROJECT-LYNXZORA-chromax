@@ -662,8 +662,9 @@ function updateChips(fromHex=false){
 
   if(!fromHex) syncCibToCurrentColor();
   document.getElementById('logoDot').style.background=cssColor;
+  document.getElementById('formatSelect').style.background=cssColor;
+  document.getElementById('cibPencil').style.color=cssColor;
   document.getElementById('logoDot').style.boxShadow=`0 0 0 3px var(--bg), 0 0 0 5px ${hex}88`;
-  document.getElementById('toggleThumb').style.background=cssColor;
 
   document.getElementById('val-hex').textContent =hexOut;
   document.getElementById('val-rgb').textContent =hasAlpha

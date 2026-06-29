@@ -88,7 +88,7 @@
     .toggle-thumb {
       position: absolute; top: 4px; left: 4px;
       width: 20px; height: 20px; border-radius: 50%;
-      background: var(--accent);
+      background: var(--bg);
       box-shadow: 2px 2px 5px var(--sh-dark);
       transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease;
       display: flex; align-items: center; justify-content: center;
@@ -240,7 +240,6 @@
     .cib-format-select {
       appearance: none;
       -webkit-appearance: none;
-      background: var(--accent);
       border: none;
       border-radius: 99px;
       color: #fff;
