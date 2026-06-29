@@ -165,9 +165,8 @@ function setMasterHSV(h,s,v,_unused=false,fromHex=false){
 //  "A Physiologically-based Model for Simulation of
 //   Color Vision Deficiency"  IEEE TVCG 15(6) pp.1291-1298
 //
-//  Pipeline: sRGB → linearize → LMS (Hunt-Pointer-Estévez)
-//            → apply CVD confusion matrix → back to LMS
-//            → back to linear sRGB → gamma-encode → clip
+//  Pipeline: sRGB → linearize → apply pre-multiplied 
+//            CVD matrix (HPE-calibrated) → gamma-encode → clip
 // ══════════════════════════════════════════════════════
 
 // sRGB ↔ linear (IEC 61966-2-1)
