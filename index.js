@@ -174,53 +174,25 @@ function setMasterHSV(h,s,v,_unused=false,fromHex=false){
 function srgbToLinear(v){ v/=255; return v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4); }
 function linearToSrgb(v){ v=clamp01(v); return Math.round((v<=0.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-0.055)*255); }
 
-// sRGB linear → LMS  (Hunt-Pointer-Estévez D65, sRGB primaries)
-// Matrix from Lindbloom: http://www.brucelindbloom.com (via Machado 2009 supplemental)
-function linearRgbToLms(r,g,b){
-  return {
-    l: 0.31399022*r + 0.63951294*g + 0.04649755*b,
-    m: 0.15537241*r + 0.75789446*g + 0.08670142*b,
-    s: 0.01775239*r + 0.10944209*g + 0.87256922*b,
-  };
-}
-// LMS → linear sRGB
-function lmsToLinearRgb(l,m,s){
-  return {
-    r:  5.47221206*l - 4.64196010*m + 0.16963708*s,
-    g: -1.12524190*l + 2.29317094*m - 0.16789520*s,
-    b:  0.02980165*l - 0.19318073*m + 1.16364789*s,
-  };
-}
-
-// CVD confusion matrices in LMS space (Machado 2009, severity = 1.0)
+// CVD matrices — Machado 2009, severity=1.0, pre-multiplied linear RGB space
+// Source: https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/
 const CVD_MATRICES = {
-  // Deuteranopia: missing M-cone
   deuteranopia: [
-    1.0,      0.0,      0.0,
-    0.9513092, 0.0486908, 0.0,
-    0.0,      0.0,      1.0,
+     0.367322,  0.860646, -0.227968,
+     0.280085,  0.672501,  0.047413,
+    -0.011820,  0.042940,  0.968881,
   ],
-  // Protanopia: missing L-cone
   protanopia: [
-    0.0,      1.05118294, -0.05116099,
-    0.0,      1.0,         0.0,
-    0.0,      0.0,         1.0,
+     0.152286,  1.052583, -0.204868,
+     0.114503,  0.786281,  0.099216,
+    -0.003882, -0.048116,  1.051998,
   ],
-  // Tritanopia: missing S-cone
   tritanopia: [
-    1.0,      0.0,       0.0,
-    0.0,      1.0,       0.0,
-   -0.86744736, 1.86727089, 0.0,
+     1.255528, -0.076749, -0.178779,
+    -0.078411,  0.930809,  0.147602,
+     0.004733,  0.691367,  0.303900,
   ],
 };
-
-function applyLmsMatrix(mat, l, m, s){
-  return {
-    l: mat[0]*l + mat[1]*m + mat[2]*s,
-    m: mat[3]*l + mat[4]*m + mat[5]*s,
-    s: mat[6]*l + mat[7]*m + mat[8]*s,
-  };
-}
 
 // Achromatopsia: weighted luminance (CIE 1931, sRGB coefficients)
 function simulateAchromatopsia(r,g,b){
@@ -230,15 +202,16 @@ function simulateAchromatopsia(r,g,b){
   return {r:out,g:out,b:out};
 }
 
-function simulateCVD(type, r, g, b){
-  if(type==='achromatopsia') return simulateAchromatopsia(r,g,b);
-  const mat=CVD_MATRICES[type];
-  if(!mat) return {r,g,b};
-  const linR=srgbToLinear(r), linG=srgbToLinear(g), linB=srgbToLinear(b);
-  const lms=linearRgbToLms(linR,linG,linB);
-  const sim=applyLmsMatrix(mat,lms.l,lms.m,lms.s);
-  const lin=lmsToLinearRgb(sim.l,sim.m,sim.s);
-  return {r:linearToSrgb(lin.r),g:linearToSrgb(lin.g),b:linearToSrgb(lin.b)};
+function simulateCVD(type, r8, g8, b8){
+  if(type==='achromatopsia') return simulateAchromatopsia(r8,g8,b8);
+  const m=CVD_MATRICES[type];
+  if(!m) return{r:r8,g:g8,b:b8};
+  const r=srgbToLinear(r8),g=srgbToLinear(g8),b=srgbToLinear(b8);
+  return{
+    r:linearToSrgb(m[0]*r+m[1]*g+m[2]*b),
+    g:linearToSrgb(m[3]*r+m[4]*g+m[5]*b),
+    b:linearToSrgb(m[6]*r+m[7]*g+m[8]*b),
+  };
 }
 
 function updateCVDPanel(hex){
