@@ -882,6 +882,44 @@
       transition: background 0.4s ease, box-shadow 0.4s ease;
     }
 
+    /* ── Preview controls wrapper ── */
+    .pvt-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Thin vertical divider between theme toggle and viewport buttons */
+    .pvt-divider-v {
+      width: 1px;
+      height: 14px;
+      background: var(--sh-dark);
+      opacity: 0.35;
+      flex-shrink: 0;
+    }
+
+    /* Preview theme toggle button */
+    .pvt-theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: var(--bg);
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      box-shadow: var(--nm-sm);
+      transition: box-shadow 0.15s ease, color 0.15s ease, transform 0.1s ease;
+      flex-shrink: 0;
+    }
+    .pvt-theme-toggle:hover { color: var(--text); transform: translateY(-1px); }
+    .pvt-theme-toggle:active { box-shadow: var(--nm-in); transform: translateY(0); }
+    .pvt-theme-toggle[aria-pressed="true"] {
+      box-shadow: var(--nm-in);
+      color: var(--accent);
+    }
+
     .pvt-btn {
       width: 28px; height: 24px;
       border: none; border-radius: 99px;
@@ -953,6 +991,21 @@
       --px-bg:  #faf9f7;
       --px-bg2: #f0ede8;
       --px-bdr: #e4dfd9;
+    }
+
+    /* ── Preview dark mode — toggled by JS adding .px-dark to .px-root ── */
+    .px-root.px-dark {
+      --px-bg:   #0f1117;
+      --px-bg2:  #1a1d27;
+      --px-text: #e8eaf0;
+      --px-muted:#7b82a0;
+      --px-bdr:  #2a2d3e;
+    }
+    /* blog dark overrides */
+    .px-blog.px-dark {
+      --px-bg:  #100f0e;
+      --px-bg2: #1a1917;
+      --px-bdr: #2c2a27;
     }
 
     /* Nav */

@@ -695,7 +695,6 @@ function updateChips(fromHex=false){
   updateCVDPanel(hex);
   updatePreviews(hex);
   renderHarmonies(hex);
-  // Silently keep the URL in sync — no recursion, just a replaceState call
   pushColorToUrl(hex, masterA);
 }
 
@@ -801,6 +800,20 @@ function scaleAllPreviews(){
   scaleOnePreview('ecom');
   scaleOnePreview('blog');
 }
+
+// ── Preview theme (dark/light) toggles ──
+document.querySelectorAll('.pvt-theme-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const cardId = btn.dataset.card;
+    const root = document.getElementById(cardId === 'ecom' ? 'pxEcom' : 'pxBlog');
+    if (!root) return;
+    const isDark = root.classList.toggle('px-dark');
+    btn.setAttribute('aria-pressed', isDark);
+    // Swap moon ↔ sun icon
+    btn.querySelector('.pvt-theme-icon-moon').style.display = isDark ? 'none'  : '';
+    btn.querySelector('.pvt-theme-icon-sun').style.display  = isDark ? ''      : 'none';
+  });
+});
 
 // Viewport toggle buttons
 document.querySelectorAll('.pvt').forEach(pvt=>{
@@ -929,7 +942,6 @@ const wYearEl = document.getElementById('wYear');
 if (wYearEl) wYearEl.textContent = new Date().getFullYear();
 
 // ── Init ──
-// Read ?c= and ?a= BEFORE first render so shared links load the right color.
 (function initFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const cParam = params.get('c');
