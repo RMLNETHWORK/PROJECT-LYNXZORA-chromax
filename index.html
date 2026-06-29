@@ -18,6 +18,7 @@
   <a class="nav-logo" href="#"><span class="logo-dot" id="logoDot"></span>ChromaX</a>
   <div class="nav-right">
     <a href="#harmoniesAnchor" class="nav-link">Harmonies</a>
+    <a href="#previewSection" class="nav-link">Previews</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
       <div class="toggle-thumb" id="toggleThumb">☀️</div>
     </button>
@@ -214,7 +215,244 @@
         <div class="harmony-swatches" id="h-tints"></div>
       </div>
     </div>
-  </div>
+  </div><!-- /harmony-section -->
+
+  <!-- ── Live Preview Section ── -->
+  <div id="previewAnchor"></div>
+  <div class="preview-section" id="previewSection">
+
+    <div class="preview-section-header">
+      <span class="preview-section-title">Live Preview</span>
+      <span class="preview-section-sub">See your color applied to real UI</span>
+    </div>
+
+    <div class="preview-cards">
+
+      <!-- ── E-Commerce ── -->
+      <div class="preview-card" id="previewCard-ecom">
+        <div class="preview-card-topbar">
+          <span class="preview-card-label">E-Commerce</span>
+          <div class="pvt" data-card="ecom">
+            <button class="pvt-btn pvt-active" data-vp="desktop" title="Desktop">
+              <svg width="14" height="12" viewBox="0 0 14 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="1.5" stroke="currentColor"/><path d="M4.5 11h5M7 9.5V11" stroke="currentColor" stroke-linecap="round"/></svg>
+            </button>
+            <button class="pvt-btn" data-vp="mobile" title="Mobile">
+              <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><rect x="0.5" y="0.5" width="7" height="12" rx="1.5" stroke="currentColor"/><circle cx="4" cy="10.5" r="0.75" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="preview-frame" id="previewFrame-ecom">
+          <div class="preview-scaler" id="previewScaler-ecom">
+            <div class="px-root px-ecom" id="pxEcom">
+
+              <nav class="px-nav">
+                <div class="px-brand"><span class="px-brand-mark"></span><span class="px-brand-name">Lumière</span></div>
+                <div class="px-nav-links"><span>Shop</span><span>Collections</span><span>About</span><span>Journal</span></div>
+                <div class="px-nav-end">
+                  <span class="px-nav-icon">♡</span>
+                  <span class="px-nav-icon px-cart-icon">🛍<em>3</em></span>
+                  <button class="px-btn px-btn-sm">Sign in</button>
+                </div>
+              </nav>
+
+              <div class="px-hero">
+                <div class="px-hero-text">
+                  <p class="px-eyebrow">New Collection — SS26</p>
+                  <h1 class="px-hero-h1">Made for<br>Everyday Joy</h1>
+                  <p class="px-hero-sub">Thoughtfully crafted objects that last a lifetime.</p>
+                  <div class="px-hero-btns">
+                    <button class="px-btn px-btn-primary">Shop Now</button>
+                    <button class="px-btn px-btn-ghost">Explore</button>
+                  </div>
+                </div>
+                <div class="px-hero-img">
+                  <div class="px-hero-blob"></div>
+                  <div class="px-hero-product">
+                    <div class="px-product-shape"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-strip">
+                <span>✦ Free shipping over $60</span>
+                <span>✦ 30-day returns</span>
+                <span>✦ Sustainably made</span>
+                <span>✦ Ships worldwide</span>
+              </div>
+
+              <div class="px-section">
+                <div class="px-section-head">
+                  <h2 class="px-section-title">Featured Products</h2>
+                  <span class="px-section-link">View all →</span>
+                </div>
+                <div class="px-grid">
+                  <div class="px-product">
+                    <div class="px-product-img px-product-img-1">
+                      <span class="px-tag">New</span>
+                    </div>
+                    <div class="px-product-body">
+                      <p class="px-product-name">Linen Tote Bag</p>
+                      <div class="px-product-footer">
+                        <span class="px-product-price">$48</span>
+                        <button class="px-add">+</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="px-product">
+                    <div class="px-product-img px-product-img-2">
+                      <span class="px-tag px-tag-sale">−20%</span>
+                    </div>
+                    <div class="px-product-body">
+                      <p class="px-product-name">Canvas Pouch</p>
+                      <div class="px-product-footer">
+                        <span class="px-product-price">$24 <s>$30</s></span>
+                        <button class="px-add">+</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="px-product">
+                    <div class="px-product-img px-product-img-3"></div>
+                    <div class="px-product-body">
+                      <p class="px-product-name">Ceramic Mug</p>
+                      <div class="px-product-footer">
+                        <span class="px-product-price">$36</span>
+                        <button class="px-add">+</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="px-product">
+                    <div class="px-product-img px-product-img-4"></div>
+                    <div class="px-product-body">
+                      <p class="px-product-name">Leather Wallet</p>
+                      <div class="px-product-footer">
+                        <span class="px-product-price">$64</span>
+                        <button class="px-add">+</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-banner">
+                <div class="px-banner-text">
+                  <p class="px-banner-title">Members get 15% off</p>
+                  <p class="px-banner-sub">Join our loyalty program — it's free.</p>
+                </div>
+                <button class="px-btn px-btn-inverse">Join Now</button>
+              </div>
+
+              <footer class="px-footer">
+                <span class="px-brand-name">Lumière</span>
+                <span class="px-footer-links"><a>Privacy</a> · <a>Terms</a> · <a>Contact</a></span>
+                <span class="px-footer-copy">© 2026 Lumière Studio</span>
+              </footer>
+
+            </div><!-- /px-ecom -->
+          </div><!-- /preview-scaler -->
+        </div><!-- /preview-frame -->
+      </div><!-- /preview-card ecom -->
+
+      <!-- ── Blog ── -->
+      <div class="preview-card" id="previewCard-blog">
+        <div class="preview-card-topbar">
+          <span class="preview-card-label">Blog</span>
+          <div class="pvt" data-card="blog">
+            <button class="pvt-btn pvt-active" data-vp="desktop" title="Desktop">
+              <svg width="14" height="12" viewBox="0 0 14 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="1.5" stroke="currentColor"/><path d="M4.5 11h5M7 9.5V11" stroke="currentColor" stroke-linecap="round"/></svg>
+            </button>
+            <button class="pvt-btn" data-vp="mobile" title="Mobile">
+              <svg width="8" height="13" viewBox="0 0 8 13" fill="none"><rect x="0.5" y="0.5" width="7" height="12" rx="1.5" stroke="currentColor"/><circle cx="4" cy="10.5" r="0.75" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="preview-frame" id="previewFrame-blog">
+          <div class="preview-scaler" id="previewScaler-blog">
+            <div class="px-root px-blog" id="pxBlog">
+
+              <nav class="px-nav px-nav-blog">
+                <div class="px-brand"><span class="px-brand-serif">Maren</span></div>
+                <div class="px-nav-links"><span>Writing</span><span>Notes</span><span>Projects</span><span>About</span></div>
+                <button class="px-btn px-btn-primary px-btn-sm">Subscribe</button>
+              </nav>
+
+              <div class="px-blog-hero">
+                <span class="px-blog-tag">Design · 6 min read</span>
+                <h1 class="px-blog-h1">The Quiet Power of<br>Intentional Color</h1>
+                <p class="px-blog-excerpt">Color isn't decoration — it's information. A single hue can shift perception, build trust, or guide attention without the reader ever noticing.</p>
+                <div class="px-blog-byline">
+                  <div class="px-avatar"></div>
+                  <div>
+                    <p class="px-author">Maren Ellis</p>
+                    <p class="px-author-meta">June 28, 2026</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-blog-content">
+                <div class="px-blog-cover"></div>
+                <p class="px-body-text">Every color decision in a design is a small argument — a claim about what matters. The best designers make these arguments deliberately, choosing hues that speak before words do.</p>
+                <h2 class="px-blog-subhead">Why Hue Matters More Than Shade</h2>
+                <p class="px-body-text">Shade and tone are finishing touches. Hue is the voice. It's the first thing perceived and the last thing forgotten.</p>
+                <div class="px-pullquote">
+                  <div class="px-pullquote-bar"></div>
+                  <span>"Color is the keyboard, the eyes are the harmonies, the soul is the piano." — Kandinsky</span>
+                </div>
+                <p class="px-body-text">Which is why picking the right hue deserves far more time than most teams give it. Start with intention, not convention.</p>
+              </div>
+
+              <div class="px-section px-blog-more">
+                <h2 class="px-section-title px-blog-more-title">More Reading</h2>
+                <div class="px-post-grid">
+                  <div class="px-post-card">
+                    <div class="px-post-img px-post-img-1"></div>
+                    <div class="px-post-body">
+                      <span class="px-post-tag">Typography</span>
+                      <p class="px-post-title">On Type Scale and Visual Rhythm</p>
+                      <p class="px-post-meta">4 min · Jun 14</p>
+                    </div>
+                  </div>
+                  <div class="px-post-card">
+                    <div class="px-post-img px-post-img-2"></div>
+                    <div class="px-post-body">
+                      <span class="px-post-tag">Systems</span>
+                      <p class="px-post-title">How I Plan a Design System from Zero</p>
+                      <p class="px-post-meta">7 min · May 30</p>
+                    </div>
+                  </div>
+                  <div class="px-post-card">
+                    <div class="px-post-img px-post-img-3"></div>
+                    <div class="px-post-body">
+                      <span class="px-post-tag">Process</span>
+                      <p class="px-post-title">Designing in Public: Week 3</p>
+                      <p class="px-post-meta">3 min · May 12</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-blog-subscribe">
+                <p class="px-subscribe-title">Stay in the loop</p>
+                <p class="px-subscribe-sub">One thoughtful essay, every other week.</p>
+                <div class="px-subscribe-form">
+                  <input class="px-subscribe-input" type="email" placeholder="you@example.com" />
+                  <button class="px-btn px-btn-primary">Subscribe</button>
+                </div>
+              </div>
+
+              <footer class="px-footer px-footer-blog">
+                <span class="px-brand-serif">Maren</span>
+                <span class="px-footer-links"><a>Twitter</a> · <a>RSS</a> · <a>Contact</a></span>
+                <span class="px-footer-copy">© 2026 Maren Ellis</span>
+              </footer>
+
+            </div><!-- /px-blog -->
+          </div><!-- /preview-scaler -->
+        </div><!-- /preview-frame -->
+      </div><!-- /preview-card blog -->
+
+    </div><!-- /preview-cards -->
+  </div><!-- /preview-section -->
+
 </main>
 
 <footer>chromax.lynxzora.online &nbsp;·&nbsp; pick. convert. copy.</footer>

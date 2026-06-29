@@ -693,6 +693,7 @@ function updateChips(fromHex=false){
 
   updateAlphaUI();
   updateCVDPanel(hex);
+  updatePreviews(hex);
   renderHarmonies(hex);
 }
 
@@ -749,6 +750,79 @@ function showToast(msg){
   t.textContent=msg;t.classList.add('show');
   clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2000);
 }
+
+// ── Live Previews ──
+
+// Derive white or dark text for good contrast on an accent background
+function pxContrastText(hex){
+  const {r,g,b}=hexToRgb(hex);
+  const lin=v=>{v/=255;return v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4);};
+  const L=0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);
+  return L>0.195?'#111827':'#ffffff';
+}
+
+// Darken hex by fraction (0–1)
+function pxDarken(hex,f){
+  const {r,g,b}=hexToRgb(hex);
+  return rgbToHex(Math.round(r*(1-f)),Math.round(g*(1-f)),Math.round(b*(1-f)));
+}
+
+function updatePreviews(hex){
+  const dark=pxDarken(hex,0.22);
+  const contrast=pxContrastText(hex);
+  ['pxEcom','pxBlog'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.style.setProperty('--px-a',   hex);
+    el.style.setProperty('--px-ad',  dark);
+    el.style.setProperty('--px-at',  contrast);
+  });
+}
+
+// Scale a preview scaler element to fill its frame
+function scaleOnePreview(cardId){
+  const scaler=document.getElementById('previewScaler-'+cardId);
+  const frame =document.getElementById('previewFrame-'+cardId);
+  if(!scaler||!frame) return;
+  const isMobile=scaler.classList.contains('pvs-mobile');
+  const logicalW=isMobile?390:1280;
+  const frameW=frame.getBoundingClientRect().width||frame.offsetWidth||520;
+  const scale=frameW/logicalW;
+  scaler.style.transform=`scale(${scale})`;
+  // Set frame height = natural content height × scale
+  const inner=scaler.querySelector('.px-root');
+  const h=inner?inner.scrollHeight:700;
+  frame.style.height=(h*scale)+'px';
+}
+
+function scaleAllPreviews(){
+  scaleOnePreview('ecom');
+  scaleOnePreview('blog');
+}
+
+// Viewport toggle buttons
+document.querySelectorAll('.pvt').forEach(pvt=>{
+  const cardId=pvt.dataset.card;
+  pvt.querySelectorAll('.pvt-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      pvt.querySelectorAll('.pvt-btn').forEach(b=>b.classList.remove('pvt-active'));
+      btn.classList.add('pvt-active');
+      const scaler=document.getElementById('previewScaler-'+cardId);
+      const root=scaler.querySelector('.px-root');
+      if(btn.dataset.vp==='mobile'){
+        scaler.classList.add('pvs-mobile');
+        root.classList.add('pvs-mobile');
+      } else {
+        scaler.classList.remove('pvs-mobile');
+        root.classList.remove('pvs-mobile');
+      }
+      requestAnimationFrame(()=>requestAnimationFrame(()=>scaleOnePreview(cardId)));
+    });
+  });
+});
+
+window.addEventListener('resize', scaleAllPreviews);
+requestAnimationFrame(()=>requestAnimationFrame(scaleAllPreviews));
 
 // ── Init ──
 redraw();
