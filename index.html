@@ -101,31 +101,78 @@
   </div>
 
   <div class="cvd-stage" aria-label="Color vision deficiency simulations">
-    <div class="color-input-bar" id="colorInputBar">
-      <div class="cib-format-wrap">
-        <select id="formatSelect" class="cib-format-select" aria-label="Input color format">
-          <option value="hex">HEX</option>
-          <option value="rgb">RGB</option>
-          <option value="hsl">HSL</option>
-          <option value="hsv">HSV</option>
-          <option value="cmyk">CMYK</option>
-          <option value="lab">LAB</option>
-          <option value="oklch">OKLCH</option>
-          <option value="css">CSS VAR</option>
-        </select>
-        <span class="cib-format-arrow">&#x25BE;</span>
+    <div class="cib-row">
+      <div class="color-input-bar" id="colorInputBar">
+        <div class="cib-format-wrap">
+          <select id="formatSelect" class="cib-format-select" aria-label="Input color format">
+            <option value="hex">HEX</option>
+            <option value="rgb">RGB</option>
+            <option value="hsl">HSL</option>
+            <option value="hsv">HSV</option>
+            <option value="cmyk">CMYK</option>
+            <option value="lab">LAB</option>
+            <option value="oklch">OKLCH</option>
+            <option value="css">CSS VAR</option>
+          </select>
+          <span class="cib-format-arrow">&#x25BE;</span>
+        </div>
+        <div class="cib-divider"></div>
+        <label class="cib-pencil" id="cibPencil" for="colorInput" aria-label="Edit color value">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.5 1.5L11.5 3.5L4.5 10.5L2 11L2.5 8.5L9.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 3L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </label>
+        <input type="text" id="colorInput" class="cib-input" value="#7C5CFC" spellcheck="false" autocomplete="off" />
+        <div class="cib-swatch" id="cibSwatch"></div>
+        <div class="cib-error" id="cibError" aria-live="polite"></div>
       </div>
-      <div class="cib-divider"></div>
-      <label class="cib-pencil" id="cibPencil" for="colorInput" aria-label="Edit color value">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.5 1.5L11.5 3.5L4.5 10.5L2 11L2.5 8.5L9.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M8 3L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-        </svg>
-      </label>
-      <input type="text" id="colorInput" class="cib-input" value="#7C5CFC" spellcheck="false" autocomplete="off" />
-      <div class="cib-swatch" id="cibSwatch"></div>
-      <div class="cib-error" id="cibError" aria-live="polite"></div>
-    </div>
+
+      <!-- Share button -->
+      <div class="share-wrap" id="shareWrap">
+        <button class="share-btn" id="shareBtn" aria-label="Share color" aria-expanded="false">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="2.5" r="1.8" stroke="currentColor" stroke-width="1.3"/>
+            <circle cx="11" cy="11.5" r="1.8" stroke="currentColor" stroke-width="1.3"/>
+            <circle cx="3"  cy="7"   r="1.8" stroke="currentColor" stroke-width="1.3"/>
+            <line x1="4.7" y1="6.1"  x2="9.3" y2="3.4"  stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <line x1="4.7" y1="7.9"  x2="9.3" y2="10.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          Share
+        </button>
+        <div class="share-dropdown" id="shareDropdown" role="menu">
+          <div class="share-dropdown-title">Share Color</div>
+          <button class="share-option" id="shareCopyLink" role="menuitem">
+            <span class="share-option-icon">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M5 8.5L8 5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <path d="M7.5 3.5L8.8 2.2A2.6 2.6 0 0 1 12.6 6l-1.3 1.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <path d="M5.5 7.5L4.2 8.8A2.6 2.6 0 0 1 .4 5L1.7 3.7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <div class="share-option-meta">
+              <span class="share-option-label">Copy link</span>
+              <span class="share-option-desc">Online · opens Chromax with this color</span>
+            </div>
+          </button>
+          <button class="share-option" id="shareCopyXml" role="menuitem">
+            <span class="share-option-icon">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <rect x="1" y="1" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/>
+                <path d="M4 5L2.5 6.5 4 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 5L10.5 6.5 9 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 4L6 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <div class="share-option-meta">
+              <span class="share-option-label">Copy XML</span>
+              <span class="share-option-desc">Offline · all 8 formats as plain text</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div><!-- /.cib-row -->
+
     <div class="cvd-header">
       <span class="cvd-title">Vision Simulation</span>
       <span class="cvd-subtitle">How others see this color</span>
@@ -455,7 +502,7 @@
 
 </main>
 
-<footer>chromax.lynxzora.online &nbsp;·&nbsp; pick. convert. copy.</footer>
+<footer>chromax.lynxzora.online &nbsp;·&nbsp; pick. convert. copy.<br><span class="watermark">LynxZora &mdash; ChromaX &copy; <span id="wYear"></span></span></footer>
 <div class="toast" id="toast"></div>
 
 <script src="index.js"></script>

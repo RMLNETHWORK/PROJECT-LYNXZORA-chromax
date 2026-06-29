@@ -695,6 +695,8 @@ function updateChips(fromHex=false){
   updateCVDPanel(hex);
   updatePreviews(hex);
   renderHarmonies(hex);
+  // Silently keep the URL in sync — no recursion, just a replaceState call
+  pushColorToUrl(hex, masterA);
 }
 
 // ── Harmonies ──
@@ -824,7 +826,129 @@ document.querySelectorAll('.pvt').forEach(pvt=>{
 window.addEventListener('resize', scaleAllPreviews);
 requestAnimationFrame(()=>requestAnimationFrame(scaleAllPreviews));
 
+// ── URL State ──
+function pushColorToUrl(hex, alpha) {
+  const params = new URLSearchParams();
+  params.set('c', hex.replace('#', ''));
+  if (alpha < 1) params.set('a', Math.round(alpha * 100) / 100);
+  history.replaceState(null, '', '?' + params.toString());
+}
+
+// ── Share button ──
+const shareBtn      = document.getElementById('shareBtn');
+const shareDropdown = document.getElementById('shareDropdown');
+
+if (shareBtn) {
+  shareBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = shareDropdown.classList.toggle('open');
+    shareBtn.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!document.getElementById('shareWrap').contains(e.target)) {
+      shareDropdown.classList.remove('open');
+      shareBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
+function buildShareData() {
+  const {r,g,b} = hsvToRgb(H, S, V);
+  const hex      = rgbToHex(r, g, b);
+  const hsl      = rgbToHsl(r, g, b);
+  const cmyk     = rgbToCmyk(r, g, b);
+  const oklch    = rgbToOklch(r, g, b);
+  const lab      = rgbToLab(r, g, b);
+  const A        = masterA;
+  const hasA     = A < 1;
+  const aR       = Math.round(A * 100) / 100;
+  const hexAlpha = Math.round(A * 255).toString(16).padStart(2, '0').toUpperCase();
+  return {
+    hex:   hasA ? hex + hexAlpha : hex,
+    rgb:   hasA ? `rgba(${r}, ${g}, ${b}, ${aR})`               : `rgb(${r}, ${g}, ${b})`,
+    hsl:   hasA ? `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${aR})` : `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
+    hsv:   hasA ? `hsva(${H}, ${S}%, ${V}%, ${aR})`             : `hsv(${H}, ${S}%, ${V}%)`,
+    cmyk:  hasA ? `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%) / ${aR}` : `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`,
+    lab:   hasA ? `lab(${lab.L} ${lab.a} ${lab.b} / ${aR})`     : `lab(${lab.L} ${lab.a} ${lab.b})`,
+    oklch: hasA ? `oklch(${oklch.L}% ${oklch.C} ${oklch.H} / ${aR})` : `oklch(${oklch.L}% ${oklch.C} ${oklch.H})`,
+    css:   hasA ? `--color: rgba(${r}, ${g}, ${b}, ${aR})`      : `--color: ${hex}`,
+  };
+}
+
+const shareCopyLinkEl = document.getElementById('shareCopyLink');
+const shareCopyXmlEl  = document.getElementById('shareCopyXml');
+
+if (shareCopyLinkEl) {
+  shareCopyLinkEl.addEventListener('click', () => {
+    const {r,g,b} = hsvToRgb(H, S, V);
+    const hex = rgbToHex(r, g, b).replace('#', '');
+    const params = new URLSearchParams();
+    params.set('c', hex);
+    if (masterA < 1) params.set('a', Math.round(masterA * 100) / 100);
+    const url = window.location.origin + window.location.pathname + '?' + params.toString();
+    navigator.clipboard.writeText(url).then(() => {
+      showToast('Link copied!');
+      shareDropdown.classList.remove('open');
+      shareBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
+if (shareCopyXmlEl) {
+  shareCopyXmlEl.addEventListener('click', () => {
+    const d = buildShareData();
+    const {r,g,b} = hsvToRgb(H, S, V);
+    const hex6 = rgbToHex(r, g, b);
+    const xml = [
+      `<?xml version="1.0" encoding="UTF-8"?>`,
+      `<color>`,
+      `  <name>${hex6}</name>`,
+      `  <alpha>${Math.round(masterA * 100)}%</alpha>`,
+      `  <formats>`,
+      `    <hex>${d.hex}</hex>`,
+      `    <rgb>${d.rgb}</rgb>`,
+      `    <hsl>${d.hsl}</hsl>`,
+      `    <hsv>${d.hsv}</hsv>`,
+      `    <cmyk>${d.cmyk}</cmyk>`,
+      `    <lab>${d.lab}</lab>`,
+      `    <oklch>${d.oklch}</oklch>`,
+      `    <css>${d.css}</css>`,
+      `  </formats>`,
+      `</color>`,
+    ].join('\n');
+    navigator.clipboard.writeText(xml).then(() => {
+      showToast('XML copied!');
+      shareDropdown.classList.remove('open');
+      shareBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
+// ── Watermark year ──
+const wYearEl = document.getElementById('wYear');
+if (wYearEl) wYearEl.textContent = new Date().getFullYear();
+
 // ── Init ──
+// Read ?c= and ?a= BEFORE first render so shared links load the right color.
+(function initFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const cParam = params.get('c');
+  const aParam = params.get('a');
+  if (cParam) {
+    const hex = /^#/.test(cParam) ? cParam : '#' + cParam;
+    if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+      const { r, g, b } = hexToRgb(hex);
+      const hsv = rgbToHsv(r, g, b);
+      masterH = hsv.h; masterS = hsv.s; masterV = hsv.v;
+      H = masterH; S = masterS; V = masterV;
+    }
+  }
+  if (aParam) {
+    const a = parseFloat(aParam);
+    if (!isNaN(a)) masterA = Math.max(0, Math.min(1, a));
+  }
+})();
+
 redraw();
 setHueCursor(masterH);
 setSVCursor(masterS, masterV);
