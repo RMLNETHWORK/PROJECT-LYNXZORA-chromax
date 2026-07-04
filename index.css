@@ -482,30 +482,9 @@
       margin-top: 2rem;
     }
 
-    .cvd-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-      border-left: 1px solid var(--text);
-      border-right: 1px solid var(--text);
-      padding: 0 1.5rem;
-    }
-
-    .cvd-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.64rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .cvd-subtitle {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.72rem;
-      color: var(--muted);
-      opacity: 0.7;
-    }
+    /* .cvd-stage already applies gap between children via flexbox,
+       so the shared .section-header's own margin-bottom would double up */
+    .cvd-stage .section-header { margin-bottom: 0; }
 
     .cvd-cards {
       display: grid;
@@ -591,12 +570,6 @@
 
     /* ── Harmonies ── */
     .harmony-section { margin-top: 4rem; width: 100%; max-width: 1120px; }
-
-    .harmony-section h2 {
-      font-family: 'DM Mono', monospace; font-size: 0.68rem;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 1.5rem; text-align: center;
-    }
 
     .harmonies { display: flex; flex-direction: column; gap: 1rem; }
 
@@ -810,7 +783,8 @@
       max-width: 1120px;
     }
 
-    .preview-section-header {
+    /* Shared header format for CVD, Harmonies, and Live Preview sections */
+    .section-header {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -818,7 +792,7 @@
       margin-bottom: 1.5rem;
     }
 
-    .preview-section-title {
+    .section-title {
       font-family: 'DM Mono', monospace;
       font-size: 0.68rem;
       letter-spacing: 0.18em;
@@ -826,7 +800,7 @@
       color: var(--muted);
     }
 
-    .preview-section-sub {
+    .section-sub {
       font-family: 'DM Sans', sans-serif;
       font-size: 0.72rem;
       color: var(--muted);
