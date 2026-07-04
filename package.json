@@ -2,6 +2,6 @@
   "name": "chromax",
   "private": true,
   "dependencies": {
-    "workers-og": "^0.0.25"
+    "@cloudflare/pages-plugin-vercel-og": "^0.1.0"
   }
 }
