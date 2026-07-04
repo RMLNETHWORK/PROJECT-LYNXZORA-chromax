@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About ChromaX — a free color converter and harmony generator supporting HEX, RGB, HSL, HSV, LAB, CMYK, OKLCH and CSS variables, built by LynxZora." />
+  <title>About ChromaX - Color Converter</title>
+  <link rel="canonical" href="https://chromax.portfolio.lynxzora.online/about.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="About ChromaX - Color Converter & Harmony Generator" />
+  <meta property="og:description" content="ChromaX is a free color converter and harmony generator supporting HEX, RGB, HSL, HSV, LAB, CMYK, OKLCH and CSS variables, with live UI previews and colorblindness simulation." />
+  <meta property="og:image" content="https://chromax.portfolio.lynxzora.online/og-image.png" />
+  <meta property="og:url" content="https://chromax.portfolio.lynxzora.online/about.html" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="About ChromaX - Color Converter & Harmony Generator" />
+  <meta name="twitter:description" content="ChromaX is a free color converter and harmony generator supporting HEX, RGB, HSL, HSV, LAB, CMYK, OKLCH and CSS variables." />
+  <meta name="twitter:image" content="https://chromax.portfolio.lynxzora.online/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" href="LynxZora - ChromaX Logo.svg" sizes="1024x1024" type="image/svg+xml">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About ChromaX",
+    "url": "https://chromax.portfolio.lynxzora.online/about.html",
+    "description": "About ChromaX — a free color converter and harmony generator supporting HEX, RGB, HSL, HSV, LAB, CMYK, OKLCH and CSS variables."
+  }
+  </script>
+
+  <style>
+    .about-main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+    .about-main h1 {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.6rem;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+    }
+    .about-main .about-tagline {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2.2rem;
+    }
+    .about-main h2 {
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      font-weight: 500;
+      margin: 2.2rem 0 0.8rem;
+      color: var(--text);
+    }
+    .about-main p {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 0.9rem;
+    }
+    .about-main ul {
+      margin: 0 0 1rem 1.2rem;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .about-main li { margin-bottom: 0.3rem; }
+    .about-main code {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85em;
+      background: var(--bg);
+      box-shadow: var(--nm-in);
+      padding: 0.1rem 0.4rem;
+      border-radius: 6px;
+    }
+    .about-cta {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.4rem;
+      border-radius: 99px;
+      background: var(--bg);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: var(--nm-out);
+      transition: all 0.2s ease;
+    }
+    .about-cta:hover { color: var(--accent); }
+    .about-cta:active { box-shadow: var(--nm-in); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html"><span class="logo-dot" id="logoDot"></span>ChromaX</a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-link">Tool</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <div class="toggle-thumb" id="toggleThumb">☀️</div>
+    </button>
+  </div>
+</nav>
+
+<main class="about-main">
+  <h1>About ChromaX</h1>
+  <p class="about-tagline">pick. convert. copy.</p>
+
+  <p>ChromaX is a free, browser-based color converter and harmony generator. Pick a color once and instantly see it expressed in every format a designer or developer actually needs — no sign-up required to use.</p>
+
+  <h2>Supported formats</h2>
+  <ul>
+    <li><code>HEX</code> — the web-standard hexadecimal color code</li>
+    <li><code>RGB</code> — red, green, blue channel values</li>
+    <li><code>HSL</code> — hue, saturation, lightness</li>
+    <li><code>HSV</code> — hue, saturation, value/brightness</li>
+    <li><code>LAB</code> — perceptually uniform CIE Lab color space</li>
+    <li><code>CMYK</code> — cyan, magenta, yellow, key (for print workflows)</li>
+    <li><code>OKLCH</code> — modern perceptual color space gaining CSS support</li>
+    <li><code>CSS variable</code> — ready-to-paste <code>--color:</code> declarations</li>
+  </ul>
+
+  <h2>Color harmonies</h2>
+  <p>Beyond single-color conversion, ChromaX generates complementary, analogous, triadic, and other classic color harmonies from whatever color you're working with, so you can build a palette instead of guessing at one.</p>
+
+  <h2>Live previews</h2>
+  <p>Because a color rarely lives in isolation, ChromaX includes live e-commerce and blog UI mockups that re-theme in real time as you adjust your color, giving you a rough sense of how it will actually read in a real interface — light or dark.</p>
+
+  <h2>Accessibility</h2>
+  <p>ChromaX includes a colorblindness (CVD) simulator so you can check how your chosen color appears under common types of color vision deficiency before you ship it.</p>
+
+  <h2>Who made this</h2>
+  <p>ChromaX is a portfolio project by <strong>Rolance Labayog @ LynxZora</strong>. It's built with plain HTML, CSS, and JavaScript — no frameworks, no build step — as a hand-rolled exercise in color math and interface design.</p>
+
+  <a class="about-cta" href="index.html">← Back to the color tool</a>
+</main>
+
+<footer>chromax.lynxzora.online &nbsp;·&nbsp; pick. convert. copy. &nbsp;·&nbsp; <a href="index.html" class="footer-link">Tool</a><br><span class="watermark">LynxZora &mdash; ChromaX &copy; <span id="wYear"></span></span></footer>
+
+<script>
+  // Minimal theme handling, shared localStorage key with the main tool
+  const themeToggle = document.getElementById('themeToggle');
+  const thumbEl = document.getElementById('toggleThumb');
+  const htmlEl = document.documentElement;
+  const saved = localStorage.getItem('chromax-theme') || 'light';
+  htmlEl.setAttribute('data-theme', saved);
+  thumbEl.textContent = saved === 'light' ? '☀️' : '🌙';
+
+  themeToggle.addEventListener('click', () => {
+    const next = htmlEl.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    htmlEl.setAttribute('data-theme', next);
+    localStorage.setItem('chromax-theme', next);
+    thumbEl.textContent = next === 'light' ? '☀️' : '🌙';
+  });
+
+  const wYearEl = document.getElementById('wYear');
+  if (wYearEl) wYearEl.textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
