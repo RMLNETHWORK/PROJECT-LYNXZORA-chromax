@@ -25,12 +25,11 @@ export async function onRequest(context) {
   const hasColor = HEX_RE.test(rawParam);
   const hex = hasColor ? rawParam.toUpperCase() : null;
 
-  // The OG image always points to the dynamic endpoint now — with a
-  // color param when one is shared, or with no param (branded default,
-  // handled by og.png.js's own fallback) for the plain homepage.
+  // Sharing an actual color gets the generated card. Sharing the bare
+  // homepage URL gets the app icon itself, straight from the static file.
   const ogImage = hasColor
     ? `${url.origin}/og.png?c=${hex}`
-    : `${url.origin}/og.png`;
+    : `${url.origin}/LynxZora%20-%20ChromaX%20Logo.png`;
 
   // Title/description/url/canonical only change when an actual color
   // is being shared — otherwise the homepage keeps its existing,
