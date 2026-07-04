@@ -29,10 +29,18 @@ const wCtx = wheelCanvas.getContext('2d');
 const svCanvas = document.getElementById('svCanvas');
 const sCtx = svCanvas.getContext('2d');
 
-function resizeCanvases() {
-  const newW = getWheelSize();
-  if (newW === W) return;
-  W = newW; CX = W/2; CY = W/2;
+// Applies the current value of W to the actual canvas buffers/DOM,
+// then redraws. Unlike resizeCanvases(), this always runs — it doesn't
+// check whether W has changed. This must run once on initial load,
+// because the canvas elements' width/height attributes in the HTML
+// are hardcoded to 240 and only ever get corrected here. Without an
+// unconditional call on load, a mobile page load (W=200) leaves the
+// canvas *drawing buffer* at 240 while CSS forces the *displayed* box
+// to 200px — the wheel graphic renders off-center relative to the
+// (correctly centered) cursor overlays until something (e.g. a resize
+// event) finally calls this.
+function applyWheelSize() {
+  CX = W/2; CY = W/2;
   WHEEL_OUTER = Math.round(W * 112/240);
   WHEEL_INNER = Math.round(W * 86/240);
   SQ_HALF = Math.floor(WHEEL_INNER / Math.sqrt(2)) - 2;
@@ -55,7 +63,19 @@ function resizeCanvases() {
   setSVCursor(masterS, masterV);
 }
 
+function resizeCanvases() {
+  const newW = getWheelSize();
+  if (newW === W) return;
+  W = newW;
+  applyWheelSize();
+}
+
 window.addEventListener('resize', resizeCanvases);
+// Also catch pinch-zoom / mobile address-bar viewport changes that
+// don't always fire a plain 'resize' event.
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', resizeCanvases);
+}
 
 // ── State ──
 let masterH = 258, masterS = 63, masterV = 99;
@@ -961,9 +981,13 @@ if (wYearEl) wYearEl.textContent = new Date().getFullYear();
   }
 })();
 
-redraw();
-setHueCursor(masterH);
-setSVCursor(masterS, masterV);
+// Force the canvas drawing-buffer size (and container/cursor geometry)
+// to match W on first load. This is the critical call: without it,
+// the canvas elements keep the hardcoded width="240" height="240"
+// attributes from the HTML even when W is 200 on mobile, and the
+// wheel graphic renders off-center relative to the cursors until a
+// later resize event happens to call applyWheelSize() for us.
+applyWheelSize();
 updateAlphaUI();
 updateChips();
 syncCibToCurrentColor();
