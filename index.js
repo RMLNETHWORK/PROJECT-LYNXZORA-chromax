@@ -331,6 +331,7 @@ function setHueCursor(hue){
   el.style.left=(CX+r*Math.cos(angle))+'px';
   el.style.top =(CY+r*Math.sin(angle))+'px';
   el.style.background=`hsl(${hue},100%,50%)`;
+  el.setAttribute('aria-valuenow', hue);
 }
 function setSVCursor(s,v){
   const x=CX-SQ_HALF+(s/100)*(SQ_HALF*2);
@@ -339,6 +340,8 @@ function setSVCursor(s,v){
   el.style.left=x+'px';
   el.style.top =y+'px';
   el.style.borderColor=v>55&&s<55?'rgba(0,0,0,0.6)':'#fff';
+  el.setAttribute('aria-valuenow', s);
+  el.setAttribute('aria-valuetext', `Saturation ${s}%, Brightness ${v}%`);
 }
 
 // ── Event helpers ──
@@ -374,6 +377,36 @@ cont.addEventListener('touchstart',e=>{e.preventDefault();const p=getPos(e);if(o
 window.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();const p=getPos(e);if(drag==='w')pickHue(p);else pickSV(p);},{passive:false});
 window.addEventListener('touchend',()=>drag=null);
 
+// ── Keyboard access: hue ring ──
+const hueCursorEl = document.getElementById('hueCursor');
+hueCursorEl.addEventListener('keydown', e => {
+  const step = e.shiftKey ? 10 : 1;
+  switch (e.key) {
+    case 'ArrowLeft':  case 'ArrowDown': setMasterHSV(masterH-step,masterS,masterV,false); break;
+    case 'ArrowRight': case 'ArrowUp':   setMasterHSV(masterH+step,masterS,masterV,false); break;
+    case 'Home': setMasterHSV(0,masterS,masterV,false); break;
+    case 'End':  setMasterHSV(359,masterS,masterV,false); break;
+    default: return;
+  }
+  e.preventDefault();
+});
+
+// ── Keyboard access: saturation / value square ──
+const svCursorEl = document.getElementById('svCursor');
+svCursorEl.addEventListener('keydown', e => {
+  const step = e.shiftKey ? 10 : 1;
+  switch (e.key) {
+    case 'ArrowLeft':  setMasterHSV(masterH,clamp(masterS-step,0,100),masterV,false); break;
+    case 'ArrowRight': setMasterHSV(masterH,clamp(masterS+step,0,100),masterV,false); break;
+    case 'ArrowUp':    setMasterHSV(masterH,masterS,clamp(masterV+step,0,100),false); break;
+    case 'ArrowDown':  setMasterHSV(masterH,masterS,clamp(masterV-step,0,100),false); break;
+    case 'Home': setMasterHSV(masterH,0,masterV,false); break;
+    case 'End':  setMasterHSV(masterH,100,masterV,false); break;
+    default: return;
+  }
+  e.preventDefault();
+});
+
 // ── Alpha strip ──
 const alphaTrack = document.getElementById('alphaTrack');
 const alphaThumb = document.getElementById('alphaThumb');
@@ -402,6 +435,7 @@ function updateAlphaUI() {
   // dim label when fully opaque (no alpha in play)
   document.getElementById('alphaLabel').style.color =
     masterA < 1 ? 'var(--accent)' : 'var(--muted)';
+  alphaThumb.setAttribute('aria-valuenow', Math.round(pct));
 }
 
 let alphaDrag = false;
@@ -411,6 +445,21 @@ window.addEventListener('mouseup', () => { alphaDrag = false; });
 alphaTrack.addEventListener('touchstart', e => { e.preventDefault(); alphaDrag = true; setAlphaFromX(e.touches[0].clientX); }, { passive: false });
 window.addEventListener('touchmove', e => { if (alphaDrag) { e.preventDefault(); setAlphaFromX(e.touches[0].clientX); } }, { passive: false });
 window.addEventListener('touchend', () => { alphaDrag = false; });
+
+// ── Keyboard access: alpha slider ──
+alphaThumb.addEventListener('keydown', e => {
+  const step = (e.shiftKey ? 0.1 : 0.01);
+  switch (e.key) {
+    case 'ArrowLeft':  case 'ArrowDown': masterA = clamp01(Math.round((masterA-step)*100)/100); break;
+    case 'ArrowRight': case 'ArrowUp':   masterA = clamp01(Math.round((masterA+step)*100)/100); break;
+    case 'Home': masterA = 0; break;
+    case 'End':  masterA = 1; break;
+    default: return;
+  }
+  e.preventDefault();
+  updateAlphaUI();
+  updateChips();
+});
 
 // ── Format-aware Color Input Bar ──
 const FORMAT_META = {
@@ -658,6 +707,17 @@ function syncCibToCurrentColor() {
 }
 
 // ── Update ──
+// Debounced so a mouse/touch drag doesn't spam the screen reader with
+// every intermediate pixel — only the settled value gets announced.
+const colorAnnouncer = document.getElementById('colorAnnouncer');
+let announceTimer = null;
+function announceColor(hexOut){
+  clearTimeout(announceTimer);
+  announceTimer = setTimeout(() => {
+    colorAnnouncer.textContent = 'Color ' + hexOut;
+  }, 400);
+}
+
 function updateChips(fromHex=false){
   const {r,g,b}=hsvToRgb(H,S,V);
   const hex=rgbToHex(r,g,b);
@@ -716,6 +776,7 @@ function updateChips(fromHex=false){
   updatePreviews(hex);
   renderHarmonies(hex);
   pushColorToUrl(hex, masterA);
+  announceColor(hexOut);
 }
 
 // ── Harmonies ──
@@ -741,9 +802,11 @@ function renderHarmonies(hex){
     const wrap=document.getElementById(id);
     wrap.innerHTML='';
     colors.forEach(color=>{
-      const div=document.createElement('div');
+      const div=document.createElement('button');
+      div.type='button';
       div.className='swatch'+(color.toUpperCase()===hex.toUpperCase()?' active':'');
       div.style.background=color;
+      div.setAttribute('aria-label','Use color '+color.toUpperCase());
       const label=document.createElement('span');
       label.className='swatch-hex';label.textContent=color.toUpperCase();
       div.appendChild(label);

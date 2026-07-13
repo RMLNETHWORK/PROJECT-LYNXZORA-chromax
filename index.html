@@ -56,30 +56,32 @@
 
 <main>
 
+  <div id="colorAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
   <div class="color-stage">
 
     <!-- Left chips -->
     <div class="chips left">
-      <div class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip" onclick="copyChip(this)">
         <div class="chip-label">HEX</div>
         <div class="chip-value" id="val-hex">#7C5CFC</div>
         <span class="chip-copy">copy</span>
-      </div>
-      <div class="chip" onclick="copyChip(this)">
+      </button>
+      <button type="button" class="chip" onclick="copyChip(this)">
         <div class="chip-label">RGB</div>
         <div class="chip-value" id="val-rgb">rgb(124, 92, 252)</div>
         <span class="chip-copy">copy</span>
-      </div>
-      <div class="chip" onclick="copyChip(this)">
+      </button>
+      <button type="button" class="chip" onclick="copyChip(this)">
         <div class="chip-label">HSL</div>
         <div class="chip-value" id="val-hsl">hsl(258, 96%, 67%)</div>
         <span class="chip-copy">copy</span>
-      </div>
-      <div class="chip" onclick="copyChip(this)">
+      </button>
+      <button type="button" class="chip" onclick="copyChip(this)">
         <div class="chip-label">LAB</div>
         <div class="chip-value" id="val-lab">lab(45.2 38.4 -67.1)</div>
         <span class="chip-copy">copy</span>
-      </div>
+      </button>
     </div>
 
     <!-- Center picker -->
@@ -89,15 +91,19 @@
         <div class="wheel-container" id="wheelContainer">
           <canvas id="wheelCanvas" width="240" height="240"></canvas>
           <canvas id="svCanvas"    width="240" height="240"></canvas>
-          <div class="hue-cursor" id="hueCursor"></div>
-          <div class="sv-cursor"  id="svCursor"></div>
+          <div class="hue-cursor" id="hueCursor" tabindex="0" role="slider"
+               aria-label="Hue" aria-valuemin="0" aria-valuemax="359" aria-valuenow="258"></div>
+          <div class="sv-cursor"  id="svCursor" tabindex="0" role="slider"
+               aria-label="Saturation and brightness" aria-valuemin="0" aria-valuemax="100"
+               aria-valuenow="63" aria-valuetext="Saturation 63%, Brightness 99%"></div>
         </div>
       </div>
       <div class="alpha-strip-wrap">
         <span class="alpha-side-label">A</span>
         <div class="alpha-track" id="alphaTrack">
           <div class="alpha-track-gradient" id="alphaGradient"></div>
-          <div class="alpha-thumb" id="alphaThumb"></div>
+          <div class="alpha-thumb" id="alphaThumb" tabindex="0" role="slider"
+               aria-label="Alpha" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"></div>
         </div>
         <span class="alpha-value-label" id="alphaLabel">100%</span>
       </div>
@@ -105,26 +111,26 @@
 
     <!-- Right chips -->
     <div class="chips right">
-      <div class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip" onclick="copyChip(this)">
         <div class="chip-label">HSV</div>
         <div class="chip-value" id="val-hsv">hsv(258, 63%, 99%)</div>
         <span class="chip-copy">copy</span>
-      </div>
-      <div class="chip" onclick="copyChip(this)">
+      </button>
+      <button type="button" class="chip" onclick="copyChip(this)">
         <div class="chip-label">CMYK</div>
         <div class="chip-value" id="val-cmyk">cmyk(51%, 63%, 0%, 1%)</div>
         <span class="chip-copy">copy</span>
-      </div>
-      <div class="chip" onclick="copyChip(this)">
+      </button>
+      <button type="button" class="chip" onclick="copyChip(this)">
         <div class="chip-label">CSS VAR</div>
         <div class="chip-value" id="val-css">--color: #7C5CFC</div>
         <span class="chip-copy">copy</span>
-      </div>
-      <div class="chip" onclick="copyChip(this)">
+      </button>
+      <button type="button" class="chip" onclick="copyChip(this)">
         <div class="chip-label">OKLCH</div>
         <div class="chip-value" id="val-oklch">oklch(67.0% 0.1934 258.0)</div>
         <span class="chip-copy">copy</span>
-      </div>
+      </button>
     </div>
 
   </div>
