@@ -1018,7 +1018,7 @@
 
     /* ── Preview dark mode — toggled by JS adding .px-dark to .px-root ── */
     .px-root.px-dark {
-      --px-bg:   #0f1117;
+      --px-bg:   #222428;
       --px-bg2:  #1a1d27;
       --px-text: #e8eaf0;
       --px-muted:#7b82a0;
@@ -1026,7 +1026,7 @@
     }
     /* blog dark overrides */
     .px-blog.px-dark {
-      --px-bg:  #100f0e;
+      --px-bg:  #222428;
       --px-bg2: #1a1917;
       --px-bdr: #2c2a27;
     }
