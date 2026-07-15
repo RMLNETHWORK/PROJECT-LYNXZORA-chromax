@@ -97,6 +97,59 @@
     [data-theme="light"] .toggle-thumb { transform: translateX(0); }
     [data-theme="dark"]  .toggle-thumb { transform: translateX(28px); }
 
+    /* ── Motion (intro animation) Toggle ── */
+    .motion-toggle {
+      width: 56px; height: 28px;
+      background: var(--bg);
+      border-radius: 99px; border: none; cursor: pointer;
+      position: relative;
+      box-shadow: var(--nm-in);
+      transition: box-shadow 0.3s ease, background 0.4s ease;
+    }
+    .toggle-thumb-motion {
+      font-size: 11px;
+      opacity: 1;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s ease, opacity 0.2s ease;
+    }
+    [data-motion="on"]  .toggle-thumb-motion { transform: translateX(0); }
+    [data-motion="off"] .toggle-thumb-motion { transform: translateX(28px); opacity: 0.55; }
+
+    /* ── Intro animation: chips & CVD cards ──
+       Elements start hidden via the .intro-hide class in the markup so
+       there's no flash of fully-visible content before JS runs. JS removes
+       the class (with a per-element transition-delay for stagger) once the
+       wheel-rotate stage finishes. When motion is disabled, JS strips
+       .intro-hide immediately on load with no transition. */
+    .chip.intro-hide {
+      opacity: 0;
+      transform: translateY(-14px);
+    }
+    .cvd-card.intro-hide {
+      opacity: 0;
+      transform: translateX(-16px);
+    }
+
+    /* ── Scroll reveal: harmony palettes ──
+       Only applied when motion is enabled; JS adds .scroll-hide to each
+       .harmony-row on load and swaps it for .scroll-reveal via
+       IntersectionObserver as the user scrolls to it. */
+    .harmony-row.scroll-hide {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    .harmony-row.scroll-reveal {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Respect OS-level reduced motion regardless of the in-app toggle's
+       stored value — never animate transform/opacity transitions here. */
+    @media (prefers-reduced-motion: reduce) {
+      .chip, .cvd-card, .harmony-row, .toggle-thumb-motion {
+        transition: none !important;
+      }
+    }
+
     /* ── Main ── */
     main {
       min-height: calc(100vh - 66px);
@@ -151,7 +204,7 @@
       box-shadow: var(--nm-out);
       min-width: 240px; max-width: 280px;
       position: relative; overflow: hidden;
-      transition: box-shadow 0.2s ease, transform 0.15s ease;
+      transition: box-shadow 0.2s ease, transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.32s ease;
       border: none;
       /* button-element reset — chips are now real <button>s */
       display: block;
@@ -224,6 +277,11 @@
       cursor: crosshair; border-radius: 50%;
       /* inner inset ring */
       box-shadow: var(--nm-in);
+      transition: opacity 0.4s ease, transform 0.9s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .wheel-container.intro-hide {
+      opacity: 0;
+      transform: scale(0.7);
     }
     #wheelCanvas { position: absolute; top: 0; left: 0; border-radius: 50%; }
     #svCanvas    { position: absolute; top: 0; left: 0; }
@@ -529,7 +587,7 @@
       flex-direction: column;
       align-items: center;
       gap: 0.85rem;
-      transition: box-shadow 0.4s ease, background 0.4s ease;
+      transition: box-shadow 0.4s ease, background 0.4s ease, opacity 0.35s ease, transform 0.35s ease;
     }
 
     .cvd-swatch-wrap {
@@ -606,7 +664,7 @@
       padding: 1rem 1.4rem;
       display: flex; align-items: center; gap: 1.2rem;
       box-shadow: var(--nm-out);
-      transition: box-shadow 0.4s ease, background 0.4s ease;
+      transition: box-shadow 0.4s ease, background 0.4s ease, opacity 0.5s ease, transform 0.5s ease;
     }
 
     .harmony-name {
@@ -687,6 +745,9 @@
       .theme-toggle { width: 44px; height: 24px; flex-shrink: 0; }
       .toggle-thumb { width: 16px; height: 16px; font-size: 9px; }
       [data-theme="dark"] .toggle-thumb { transform: translateX(20px); }
+      .motion-toggle { width: 44px; height: 24px; flex-shrink: 0; }
+      .toggle-thumb-motion { width: 16px; height: 16px; font-size: 9px; }
+      [data-motion="off"] .toggle-thumb-motion { transform: translateX(20px); }
 
       main { padding: 1rem 1rem 4rem; }
 

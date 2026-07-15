@@ -14,6 +14,34 @@ themeToggle.addEventListener('click', () => {
   redraw();
 });
 
+// ── Motion (intro animation) preference ──
+// Default is ON, except when the OS-level "reduce motion" setting is
+// active — that always wins over the app default until the person
+// explicitly opts back in via the toggle. Once they've made an explicit
+// choice, it's remembered in localStorage and takes precedence.
+const motionToggle = document.getElementById('motionToggle');
+const motionThumb  = document.getElementById('motionThumb');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const storedMotion = localStorage.getItem('chromax-motion'); // 'on' | 'off' | null
+let motionOn = storedMotion !== null ? storedMotion === 'on' : !prefersReducedMotion;
+
+function applyMotionUI(){
+  htmlEl.setAttribute('data-motion', motionOn ? 'on' : 'off');
+  motionThumb.textContent = motionOn ? '✨' : '⏸';
+  motionToggle.setAttribute('aria-pressed', String(motionOn));
+  motionToggle.setAttribute('aria-label', motionOn ? 'Disable intro animation' : 'Enable intro animation');
+}
+applyMotionUI();
+
+motionToggle.addEventListener('click', () => {
+  motionOn = !motionOn;
+  localStorage.setItem('chromax-motion', motionOn ? 'on' : 'off');
+  applyMotionUI();
+  // Turning motion off mid-session shouldn't leave scroll-reveal content
+  // stuck invisible below the fold — reveal it immediately.
+  if (!motionOn) revealAllHarmonyRows();
+});
+
 // ── Canvas & geometry ──
 // Actual pixel size driven by CSS; canvas resolution matches
 function getWheelSize() {
@@ -1024,6 +1052,118 @@ if (shareCopyXmlEl) {
 const wYearEl = document.getElementById('wYear');
 if (wYearEl) wYearEl.textContent = new Date().getFullYear();
 
+// ══════════════════════════════════════════════════════
+//  Intro animation
+//  Sequence: hue wheel sweeps to the target color → the 8 format
+//  chips pop in top-to-bottom (both columns in parallel) → the 4 CVD
+//  cards pop in left-to-right. Harmony palettes are handled separately
+//  below via scroll reveal, since they're off-screen on load.
+//  Runs on every load/reload (no once-per-session suppression, and no
+//  exception for ?c=... URLs — the site rewrites the URL with the
+//  current color as you pick, so treating that as "arrived via a
+//  shared link" would skip the intro on every reload after the first
+//  color change, which is exactly what we don't want).
+// ══════════════════════════════════════════════════════
+
+function revealChips(){
+  ['left', 'right'].forEach(side => {
+    const chips = document.querySelectorAll('.chips.' + side + ' .chip');
+    chips.forEach((chip, i) => {
+      chip.style.transitionDelay = (i * 70) + 'ms';
+      chip.classList.remove('intro-hide');
+    });
+  });
+}
+
+function revealCvdCards(){
+  const cards = document.querySelectorAll('.cvd-card');
+  cards.forEach((card, i) => {
+    card.style.transitionDelay = (i * 90) + 'ms';
+    card.classList.remove('intro-hide');
+  });
+}
+
+function skipEntranceAnimation(){
+  // Motion disabled (or a shared-color link) — show everything in its
+  // final state immediately, no transitions, no delays.
+  document.querySelectorAll('.chip, .cvd-card').forEach(el => {
+    el.style.transitionDelay = '0ms';
+    el.classList.remove('intro-hide');
+  });
+  const wheelEl = document.getElementById('wheelContainer');
+  wheelEl.style.transitionDelay = '0ms';
+  wheelEl.classList.remove('intro-hide');
+}
+
+function runIntroAnimation(){
+  const targetH = masterH, targetS = masterS, targetV = masterV;
+  const popDuration = 450;   // ms, wheel pop-in stage
+  const sweepDuration = 650; // ms, hue-sweep stage
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+  // applyWheelSize() already drew the wheel/cursor at the target position
+  // moments earlier — reset to hue 0 now so the pop-in and the sweep that
+  // follows don't fight each other visually.
+  drawSV(0);
+  setHueCursor(0);
+
+  // Stage 1: pop the wheel container in (scale + fade).
+  const wheelEl = document.getElementById('wheelContainer');
+  wheelEl.style.transitionDelay = '0ms';
+  wheelEl.classList.remove('intro-hide');
+
+  setTimeout(startSweep, popDuration);
+
+  // Stage 2: sweep the hue ring from 0 to the target color.
+  function startSweep(){
+    const start = performance.now();
+    function frame(now){
+      const t = Math.min(1, (now - start) / sweepDuration);
+      const eased = easeOutCubic(t);
+      const hue = Math.round(targetH * eased);
+      // Lightweight per-frame update: only the wheel visuals, not the
+      // full chip/CVD/harmony recompute that setMasterHSV triggers —
+      // those are hidden behind opacity:0 right now anyway.
+      drawSV(hue);
+      setHueCursor(hue);
+      if (t < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        // Lock in the real target values and populate everything for real.
+        setMasterHSV(targetH, targetS, targetV);
+        revealChips();
+        // Chip stagger: last chip finishes at ~3*70 + 320ms transition.
+        setTimeout(revealCvdCards, 3 * 70 + 320);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+}
+
+// ── Harmony palettes: reveal on scroll ──
+let harmonyObserver = null;
+function setupHarmonyScrollReveal(){
+  const rows = document.querySelectorAll('.harmony-row');
+  rows.forEach(row => row.classList.add('scroll-hide'));
+  harmonyObserver = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.remove('scroll-hide');
+        entry.target.classList.add('scroll-reveal');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  rows.forEach(row => harmonyObserver.observe(row));
+}
+function revealAllHarmonyRows(){
+  if (harmonyObserver) harmonyObserver.disconnect();
+  document.querySelectorAll('.harmony-row').forEach(row => {
+    row.classList.remove('scroll-hide');
+    row.classList.add('scroll-reveal');
+  });
+}
+
 // ── Init ──
 (function initFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -1052,5 +1192,15 @@ if (wYearEl) wYearEl.textContent = new Date().getFullYear();
 // later resize event happens to call applyWheelSize() for us.
 applyWheelSize();
 updateAlphaUI();
-updateChips();
+
+if (motionOn) {
+  runIntroAnimation();
+} else {
+  updateChips();
+  skipEntranceAnimation();
+}
+
+if (motionOn) {
+  setupHarmonyScrollReveal();
+}
 syncCibToCurrentColor();

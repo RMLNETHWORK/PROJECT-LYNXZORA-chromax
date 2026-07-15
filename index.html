@@ -51,6 +51,9 @@
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
       <div class="toggle-thumb" id="toggleThumb">☀️</div>
     </button>
+    <button class="motion-toggle" id="motionToggle" aria-label="Disable intro animation" aria-pressed="true">
+      <div class="toggle-thumb toggle-thumb-motion" id="motionThumb">✨</div>
+    </button>
   </div>
 </nav>
 
@@ -62,22 +65,22 @@
 
     <!-- Left chips -->
     <div class="chips left">
-      <button type="button" class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip intro-hide" onclick="copyChip(this)">
         <div class="chip-label">HEX</div>
         <div class="chip-value" id="val-hex">#7C5CFC</div>
         <span class="chip-copy">copy</span>
       </button>
-      <button type="button" class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip intro-hide" onclick="copyChip(this)">
         <div class="chip-label">RGB</div>
         <div class="chip-value" id="val-rgb">rgb(124, 92, 252)</div>
         <span class="chip-copy">copy</span>
       </button>
-      <button type="button" class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip intro-hide" onclick="copyChip(this)">
         <div class="chip-label">HSL</div>
         <div class="chip-value" id="val-hsl">hsl(258, 96%, 67%)</div>
         <span class="chip-copy">copy</span>
       </button>
-      <button type="button" class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip intro-hide" onclick="copyChip(this)">
         <div class="chip-label">LAB</div>
         <div class="chip-value" id="val-lab">lab(45.2 38.4 -67.1)</div>
         <span class="chip-copy">copy</span>
@@ -88,7 +91,7 @@
     <div class="picker-wrap">
       <div class="master-label">Master</div>
       <div class="wheel-bowl">
-        <div class="wheel-container" id="wheelContainer">
+        <div class="wheel-container intro-hide" id="wheelContainer">
           <canvas id="wheelCanvas" width="240" height="240"></canvas>
           <canvas id="svCanvas"    width="240" height="240"></canvas>
           <div class="hue-cursor" id="hueCursor" tabindex="0" role="slider"
@@ -111,22 +114,22 @@
 
     <!-- Right chips -->
     <div class="chips right">
-      <button type="button" class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip intro-hide" onclick="copyChip(this)">
         <div class="chip-label">HSV</div>
         <div class="chip-value" id="val-hsv">hsv(258, 63%, 99%)</div>
         <span class="chip-copy">copy</span>
       </button>
-      <button type="button" class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip intro-hide" onclick="copyChip(this)">
         <div class="chip-label">CMYK</div>
         <div class="chip-value" id="val-cmyk">cmyk(51%, 63%, 0%, 1%)</div>
         <span class="chip-copy">copy</span>
       </button>
-      <button type="button" class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip intro-hide" onclick="copyChip(this)">
         <div class="chip-label">CSS VAR</div>
         <div class="chip-value" id="val-css">--color: #7C5CFC</div>
         <span class="chip-copy">copy</span>
       </button>
-      <button type="button" class="chip" onclick="copyChip(this)">
+      <button type="button" class="chip intro-hide" onclick="copyChip(this)">
         <div class="chip-label">OKLCH</div>
         <div class="chip-value" id="val-oklch">oklch(67.0% 0.1934 258.0)</div>
         <span class="chip-copy">copy</span>
@@ -213,7 +216,7 @@
       <span class="section-sub">How others see this color</span>
     </div>
     <div class="cvd-cards">
-      <div class="cvd-card" data-cvd="deuteranopia">
+      <div class="cvd-card intro-hide" data-cvd="deuteranopia">
         <div class="cvd-swatch-wrap">
           <div class="cvd-swatch-original" id="cvd-orig-deuteranopia"></div>
           <div class="cvd-arrow">→</div>
@@ -225,7 +228,7 @@
           <div class="cvd-card-hex" id="cvd-hex-deuteranopia">#7C5CFC</div>
         </div>
       </div>
-      <div class="cvd-card" data-cvd="protanopia">
+      <div class="cvd-card intro-hide" data-cvd="protanopia">
         <div class="cvd-swatch-wrap">
           <div class="cvd-swatch-original" id="cvd-orig-protanopia"></div>
           <div class="cvd-arrow">→</div>
@@ -237,7 +240,7 @@
           <div class="cvd-card-hex" id="cvd-hex-protanopia">#7C5CFC</div>
         </div>
       </div>
-      <div class="cvd-card" data-cvd="tritanopia">
+      <div class="cvd-card intro-hide" data-cvd="tritanopia">
         <div class="cvd-swatch-wrap">
           <div class="cvd-swatch-original" id="cvd-orig-tritanopia"></div>
           <div class="cvd-arrow">→</div>
@@ -249,7 +252,7 @@
           <div class="cvd-card-hex" id="cvd-hex-tritanopia">#7C5CFC</div>
         </div>
       </div>
-      <div class="cvd-card" data-cvd="achromatopsia">
+      <div class="cvd-card intro-hide" data-cvd="achromatopsia">
         <div class="cvd-swatch-wrap">
           <div class="cvd-swatch-original" id="cvd-orig-achromatopsia"></div>
           <div class="cvd-arrow">→</div>
