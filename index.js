@@ -161,16 +161,20 @@ function rgbToCmyk(r,g,b){
 }
 function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
 
-// 25002500 OKLCH 25002500
+// ── OKLCH (Björn Ottosson) ──
+// FIXED: previously ran linear RGB through the sRGB→LMS matrix, mislabeled
+// the result as XYZ, and ran it through a second XYZ→LMS matrix on top —
+// two matrices that were never meant to be chained. That desaturated every
+// color (white came out as C≈0.03 instead of the required C=0) and skewed
+// hue/chroma for everything else. Now goes straight linear RGB → LMS →
+// cube root → OKLab, matching the inverse used by oklchToRgb() below.
 function rgbToOklch(r,g,b){
   const lin=v=>{v/=255;return v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4);};
   const lr=lin(r),lg=lin(g),lb=lin(b);
-  const X=0.4122214708*lr+0.5363325363*lg+0.0514459929*lb;
-  const Y=0.2119034982*lr+0.6806995451*lg+0.1073969566*lb;
-  const Z=0.0883024619*lr+0.2817188376*lg+0.6299787005*lb;
-  const l_=Math.cbrt(0.8189330101*X+0.3618667424*Y-0.1288597137*Z);
-  const m_=Math.cbrt(0.0329845436*X+0.9293118715*Y+0.0361456387*Z);
-  const s_=Math.cbrt(0.0482003018*X+0.2643662691*Y+0.6338517070*Z);
+  const l=0.4122214708*lr+0.5363325363*lg+0.0514459929*lb;
+  const m=0.2119034982*lr+0.6806995451*lg+0.1073969566*lb;
+  const s=0.0883024619*lr+0.2817188376*lg+0.6299787005*lb;
+  const l_=Math.cbrt(l),m_=Math.cbrt(m),s_=Math.cbrt(s);
   const L=0.2104542553*l_+0.7936177850*m_-0.0040720468*s_;
   const a=1.9779984951*l_-2.4285922050*m_+0.4505937099*s_;
   const bk=0.0259040371*l_+0.7827717662*m_-0.8086757660*s_;
