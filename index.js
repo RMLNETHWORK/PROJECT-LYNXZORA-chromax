@@ -135,7 +135,11 @@ function rgbToHsv(r,g,b){
     case g:h=((b-r)/d+2)/6;break;
     case b:h=((r-g)/d+4)/6;break;
   }}
-  return{h:Math.round(h*360),s:Math.round(s*100),v:Math.round(v*100)};
+  // NOTE: full precision on purpose — this is the canonical/master color
+  // representation. Rounding happens only at display time (see roundHSV
+  // below), never here, or round-trips through HSV lose information that
+  // 8-bit RGB actually had (see chromax-issue-hsv-precision.md).
+  return{h:h*360,s:s*100,v:v*100};
 }
 function rgbToHsl(r,g,b){
   r/=255;g/=255;b/=255;
@@ -203,11 +207,19 @@ function rgbToLab(r,g,b){
   return{L,a,b:bk};
 }
 
-function wrapHue(h){return Math.round((h%360+360)%360);}
+// Wraps into [0,360) without rounding — the master hue keeps full
+// precision; only wraps around the circle.
+function wrapHue(h){return (h%360+360)%360;}
 function clamp01(n){return clamp(n,0,1);}
 
+// Rounds an {h,s,v} triple for display/announcement only. Never feed the
+// result back into master state — see chromax-issue-hsv-precision.md.
+function roundHSV(h,s,v){
+  return{h:Math.round(h),s:Math.round(s),v:Math.round(v)};
+}
+
 function setMasterHSV(h,s,v,_unused=false,fromHex=false){
-  masterH=wrapHue(h);masterS=clamp(Math.round(s),0,100);masterV=clamp(Math.round(v),0,100);
+  masterH=wrapHue(h);masterS=clamp(s,0,100);masterV=clamp(v,0,100);
   H=masterH;S=masterS;V=masterV;
   drawSV(H);setHueCursor(H);setSVCursor(S,V);updateChips(fromHex);
 }
@@ -357,23 +369,28 @@ function redraw(){ drawWheel(); drawSV(H); }
 
 // ── Cursors ──
 function setHueCursor(hue){
+  // Position math stays continuous/float — only the announced value below
+  // is rounded, so drag/keyboard motion doesn't feel stepped.
   const angle=(hue-90)*Math.PI/180;
   const r=(WHEEL_OUTER+WHEEL_INNER)/2;
   const el=document.getElementById('hueCursor');
   el.style.left=(CX+r*Math.cos(angle))+'px';
   el.style.top =(CY+r*Math.sin(angle))+'px';
   el.style.background=`hsl(${hue},100%,50%)`;
-  el.setAttribute('aria-valuenow', hue);
+  el.setAttribute('aria-valuenow', Math.round(hue));
 }
 function setSVCursor(s,v){
+  // Position math stays continuous/float — only the announced value below
+  // is rounded, so drag/keyboard motion doesn't feel stepped.
   const x=CX-SQ_HALF+(s/100)*(SQ_HALF*2);
   const y=CY-SQ_HALF+((100-v)/100)*(SQ_HALF*2);
   const el=document.getElementById('svCursor');
   el.style.left=x+'px';
   el.style.top =y+'px';
   el.style.borderColor=v>55&&s<55?'rgba(0,0,0,0.6)':'#fff';
-  el.setAttribute('aria-valuenow', s);
-  el.setAttribute('aria-valuetext', `Saturation ${s}%, Brightness ${v}%`);
+  const sR=Math.round(s), vR=Math.round(v);
+  el.setAttribute('aria-valuenow', sR);
+  el.setAttribute('aria-valuetext', `Saturation ${sR}%, Brightness ${vR}%`);
 }
 
 // ── Event helpers ──
@@ -717,6 +734,7 @@ function syncCibToCurrentColor() {
   const cmyk = rgbToCmyk(r, g, b);
   const oklch = rgbToOklch(r, g, b);
   const lab = rgbToLab(r, g, b);
+  const hsvR = roundHSV(H, S, V);
   const A = masterA;
   const hasA = A < 1;
   const aR = Math.round(A * 100) / 100;
@@ -726,7 +744,7 @@ function syncCibToCurrentColor() {
     hex:   hasA ? hex + hexAlphaSuffix : hex,
     rgb:   hasA ? `rgba(${r}, ${g}, ${b}, ${aR})` : `rgb(${r}, ${g}, ${b})`,
     hsl:   hasA ? `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${aR})` : `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
-    hsv:   hasA ? `hsva(${H}, ${S}%, ${V}%, ${aR})` : `hsv(${H}, ${S}%, ${V}%)`,
+    hsv:   hasA ? `hsva(${hsvR.h}, ${hsvR.s}%, ${hsvR.v}%, ${aR})` : `hsv(${hsvR.h}, ${hsvR.s}%, ${hsvR.v}%)`,
     cmyk:  hasA ? `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%) / ${aR}` : `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`,
     lab:   hasA ? `lab(${lab.L} ${lab.a} ${lab.b} / ${aR})` : `lab(${lab.L} ${lab.a} ${lab.b})`,
     oklch: hasA ? `oklch(${oklch.L}% ${oklch.C} ${oklch.H} / ${aR})` : `oklch(${oklch.L}% ${oklch.C} ${oklch.H})`,
@@ -757,6 +775,7 @@ function updateChips(fromHex=false){
   const cmyk=rgbToCmyk(r,g,b);
   const oklch=rgbToOklch(r,g,b);
   const lab=rgbToLab(r,g,b);
+  const hsvR=roundHSV(H,S,V);
   const A=masterA;
   const hasAlpha=A<1;
   const aRounded=Math.round(A*100)/100;
@@ -786,8 +805,8 @@ function updateChips(fromHex=false){
     ?`hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${aRounded})`
     :`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
   document.getElementById('val-hsv').textContent =hasAlpha
-    ?`hsva(${H}, ${S}%, ${V}%, ${aRounded})`
-    :`hsv(${H}, ${S}%, ${V}%)`;
+    ?`hsva(${hsvR.h}, ${hsvR.s}%, ${hsvR.v}%, ${aRounded})`
+    :`hsv(${hsvR.h}, ${hsvR.s}%, ${hsvR.v}%)`;
   document.getElementById('val-cmyk').textContent=hasAlpha
     ?`cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%) / ${aPct}%`
     :`cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`;
@@ -987,6 +1006,7 @@ function buildShareData() {
   const cmyk     = rgbToCmyk(r, g, b);
   const oklch    = rgbToOklch(r, g, b);
   const lab      = rgbToLab(r, g, b);
+  const hsvR     = roundHSV(H, S, V);
   const A        = masterA;
   const hasA     = A < 1;
   const aR       = Math.round(A * 100) / 100;
@@ -995,7 +1015,7 @@ function buildShareData() {
     hex:   hasA ? hex + hexAlpha : hex,
     rgb:   hasA ? `rgba(${r}, ${g}, ${b}, ${aR})`               : `rgb(${r}, ${g}, ${b})`,
     hsl:   hasA ? `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${aR})` : `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
-    hsv:   hasA ? `hsva(${H}, ${S}%, ${V}%, ${aR})`             : `hsv(${H}, ${S}%, ${V}%)`,
+    hsv:   hasA ? `hsva(${hsvR.h}, ${hsvR.s}%, ${hsvR.v}%, ${aR})` : `hsv(${hsvR.h}, ${hsvR.s}%, ${hsvR.v}%)`,
     cmyk:  hasA ? `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%) / ${aR}` : `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`,
     lab:   hasA ? `lab(${lab.L} ${lab.a} ${lab.b} / ${aR})`     : `lab(${lab.L} ${lab.a} ${lab.b})`,
     oklch: hasA ? `oklch(${oklch.L}% ${oklch.C} ${oklch.H} / ${aR})` : `oklch(${oklch.L}% ${oklch.C} ${oklch.H})`,
@@ -1177,6 +1197,9 @@ function revealAllHarmonyRows(){
     const hex = /^#/.test(cParam) ? cParam : '#' + cParam;
     if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
       const { r, g, b } = hexToRgb(hex);
+      // rgbToHsv() now returns full precision (not rounded), so this
+      // shared-link path stores the same lossless master state as
+      // setMasterHSV() does — see chromax-issue-hsv-precision.md.
       const hsv = rgbToHsv(r, g, b);
       masterH = hsv.h; masterS = hsv.s; masterV = hsv.v;
       H = masterH; S = masterS; V = masterV;
