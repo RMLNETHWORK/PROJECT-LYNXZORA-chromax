@@ -2,6 +2,7 @@
   "name": "chromax",
   "private": true,
   "dependencies": {
-    "@cloudflare/pages-plugin-vercel-og": "^0.1.0"
+    "@cloudflare/pages-plugin-vercel-og": "^0.1.0",
+    "@microsoft/clarity": "^1.0.2"
   }
 }

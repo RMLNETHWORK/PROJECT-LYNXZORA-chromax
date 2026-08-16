@@ -1,3 +1,9 @@
+import Clarity from '@microsoft/clarity';
+
+const projectId = "y2y5tyb8tm"
+
+Clarity.init(projectId);
+
 // ── Theme ──
 const themeToggle = document.getElementById('themeToggle');
 const thumbEl     = document.getElementById('toggleThumb');
